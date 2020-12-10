@@ -281,6 +281,13 @@ export function layerConfigChangeUpdater(state, action) {
     newLayer = updateLayerDataResult.layer;
   }
 
+  // allow to overwrite layerData functions: e.g. getFillColor, getLineColor etc.
+  if ('layerData' in action.newConfig) {
+    for (let func in action.newConfig.layerData) {
+      layerData[func] = action.newConfig.layerData[func];
+    }
+  }
+
   let newState = state;
   if ('isVisible' in action.newConfig) {
     newState = updateStateOnLayerVisibilityChange(state, newLayer);
