@@ -13,6 +13,8 @@ import React from 'react';
 import Draggable from 'react-draggable';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
+
+import GeoDaMapButton from './map-button';
 import {hideAndShowSidePanel, openFileDialog, showGeoDaInfo, classifyMap} from '../actions/actions';
 
 // import action and forward dispatcher
@@ -147,7 +149,7 @@ export default class GeoDaToolbar extends React.Component {
                 <GeoDaButton key="4" src="./img/table.png" tooltip="Table" handler={this.handlerGeoDaTable} />
                 <GeoDaButton key="5" src="./img/weights.png" tooltip="Weights" handler={this.handlerGeoDaTable} />
                 <Divider key="-3" orientation="vertical" flexItem />
-                <GeoDaButton key="6" src="./img/classify.png" tooltip="Maps and Rates" handler={this.handlerGeoDaMap} />
+                <GeoDaMapButton key="6" src="./img/classify.png" tooltip="Maps and Rates" {...this.props} />
                 </Grid>
               </div>
             </div>

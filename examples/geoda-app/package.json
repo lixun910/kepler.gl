@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2",
     "global": "^4.3.0",
     "jsgeoda": "^0.1.6",
     "kepler.gl": "^2.4.0",

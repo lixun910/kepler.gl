@@ -3,16 +3,12 @@ import jsgeoda from 'jsgeoda';
 
 // CONSTANTS
 export const INIT = 'INIT';
-export const SET_MAP_CONFIG = 'SET_MAP_CONFIG';
-export const SHOW_MODAL = 'SHOW_MODAL';
 export const SHOW_GEODA_INFO = 'SHOW_GEODA_INFO';
 export const SHOW_TABLE = 'SHOW_TABLE';
 export const CLASSIFY_MAP = 'CLASSIFY_MAP';
 
 // ACTIONS
 export const appInit = createAction(INIT);
-export const setMapConfig = createAction(SET_MAP_CONFIG);
-export const showModal = createAction(SHOW_MODAL);
 
 // extra actions plugged into kepler.gl reducer (store.js)
 export const hideAndShowSidePanel = createAction('HIDE_AND_SHOW_SIDE_PANEL');
@@ -21,7 +17,6 @@ export const showGeoDaInfo = createAction(SHOW_GEODA_INFO);
 export const showTable = createAction(SHOW_TABLE, (dataId) => { return dataId;});
 export const classifyMap = createAction(CLASSIFY_MAP);
 
-// Hijacked ACTIONS
 // @@kepler.gl/LOAD_FILES
 export function loadJsgeoda(state, action) {
   jsgeoda.New().then(geoda => {

@@ -7,34 +7,17 @@ import {loadJsgeoda} from '../actions/actions';
 
 const customizedKeplerGlReducer = keplerGlReducer.initialState({
     uiState: {
-      // set null to hide side panel when mounted, default 'layer'
-      activeSidePanel: null,
-
-      // set null to hide all modals whtn mounted, 'addData'
-      currentModal: null,
-
-      // set true to hide side panel to disallower user customize the map
-      readOnly: false,
-
-      // defines which map the user clicked on
-      activeMapIndex: 0,
-
+      activeSidePanel: null, // set null to hide side panel when mounted, default 'layer'
+      currentModal: null, // set null to hide all modals whtn mounted, 'addData'
+      readOnly: false, // set true to hide side panel to disallower user customize the map
+      activeMapIndex: 0, // defines which map the user clicked on
       // customize which map control button to show
       mapControls: {
         ...uiStateUpdaters.DEFAULT_MAP_CONTROLS,
-        visibleLayers: {
-          show: true
-        },
-        mapLegend: {
-          show: false,
-          active:false
-        },
-        toggle3d: {
-          show: false
-        },
-        splitMap: {
-          show: false
-        }
+        visibleLayers: {show: true},
+        mapLegend: {show: false, active: false},
+        toggle3d: {show: true},
+        splitMap: {show: false}
       },
     },
     visState : {
@@ -74,13 +57,9 @@ const customizedKeplerGlReducer = keplerGlReducer.initialState({
 const reducers = combineReducers({
     // mount keplerGl reducer
     keplerGl: customizedKeplerGlReducer,
-    // mount other reducer
+    // mount geoda reducer
     geoda: appReducer
 });
-
-const returnFillColor = () => {
-  return [255,255,255];
-};
 
 const composedReducer = (state, action) => {
   switch (action.type) {
@@ -101,9 +80,7 @@ const composedReducer = (state, action) => {
       break;
 
     case '@@kepler.gl/LAYER_CONFIG_CHANGE':
-      alert('change');
       break;
-
   }
   return reducers(state, action);
  };
