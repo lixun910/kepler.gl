@@ -8,10 +8,20 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
+import Avatar from '@material-ui/core/Avatar';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import MapTwoToneIcon from '@material-ui/icons/MapTwoTone';
+import Checkbox from '@material-ui/core/Checkbox';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import TextField from '@material-ui/core/TextField';
+import {FormattedMessage} from 'react-intl'
 
 // import action and forward dispatcher
 import {wrapTo, layerConfigChange} from 'kepler.gl/actions';
-import {getDataByFieldName} from '../utils'
+import {getDataByFieldName, colorbrewer, hexToRgb} from '../utils'
 
 const styles = (theme) => ({
   root: {
@@ -30,12 +40,12 @@ const DialogTitle = withStyles(theme => ({
   root: {
     borderBottom: `1px solid ${theme.palette.divider}`,
     margin: 0,
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
   closeButton: {
     position: 'absolute',
-    right: theme.spacing.unit,
-    top: theme.spacing.unit,
+    right: theme.spacing(1),
+    top: theme.spacing(1),
     color: theme.palette.grey[500],
   },
 }))(props => {
@@ -55,7 +65,7 @@ const DialogTitle = withStyles(theme => ({
 const DialogContent = withStyles(theme => ({
   root: {
     margin: 0,
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
 }))(MuiDialogContent);
 
@@ -63,24 +73,13 @@ const DialogActions = withStyles(theme => ({
   root: {
     borderTop: `1px solid ${theme.palette.divider}`,
     margin: 0,
-    padding: theme.spacing.unit,
+    padding: theme.spacing(1),
   },
 }))(MuiDialogActions);
 
-const COLOR_SCALE = {
-  'natural_breaks':[
-    [240, 240, 240],
-    // positive
-    [255, 255, 204],
-    [255, 237, 160],
-    [254, 217, 118],
-    [254, 178, 76],
-    [253, 141, 60],
-    [252, 78, 42],
-    [227, 26, 28],
-    [189, 0, 38],
-    [128, 0, 38],
-  ],
+const COLOR_NAME = {
+  'natural_breaks': 'YlOrBr',
+  'quantile_breaks': 'YlOrBr'
 };
 
 
@@ -97,11 +96,29 @@ export default class GeoDaMapButton extends React.Component {
 
   state = {
     open: false,
+    checked: null,
+    category: 6
   };
+
+  mapTypes = {
+    "Quantile" : "quantile_breaks",
+    "Percentile" : "percentile_breaks",
+    "Box Map (Hinge=1.5)" : "hinge15_breaks",
+    "Box Map (Hinge=3.0)": "hinge30_breaks",
+    "Standard Deviation": "stddev_breaks",
+    "Natural Breaks" : "natural_breaks",
+    "Equal Intervals" : "equalinterval_breaks"
+  };
+
+  mapFixedBins = ["Box Map (Hinge=1.5)", "Box Map (Hinge=3.0)", "Standard Deviation"];
+
+  selectMap = null;
 
   handleClickOpen = () => {
     this.setState({
       open: true,
+      checked: null,
+      category: "6"
     });
   };
 
@@ -115,17 +132,16 @@ export default class GeoDaMapButton extends React.Component {
     const map_uid = this.props.geoda.map_uid;
     const jsgeoda = this.props.geoda.jsgeoda;
     const values = getDataByFieldName(this.props.keplerGl[this.mapID].visState.layerData[0].data, 'Crm_prn');
-    const nb = jsgeoda.natural_breaks(map_uid, 6, values);
-    const selectedMethod = "natural_breaks";
+    const selectedMethod = this.mapTypes[this.state.checked];
+    const k = parseInt(this.state.category);
+    const nb = jsgeoda.custom_breaks(map_uid, selectedMethod, k, null, values);
+    const colors = colorbrewer['YlOrBr'][k].map((hex)=>hexToRgb(hex));
 
     const returnFillColor = (obj) => {
       let x = obj.properties['Crm_prn'];
-      if (x ==0) {
-        return COLOR_SCALE[selectedMethod][0];
-      }
       for (var i = 1; i < nb.breaks.length; ++i) {
         if (x < nb.breaks[i])
-          return COLOR_SCALE[selectedMethod][i];
+          return colors[i-1];
       }
       return [255,255,255];
     };
@@ -140,6 +156,27 @@ export default class GeoDaMapButton extends React.Component {
     this.props.dispatch(wrapTo(this.mapID, layerConfigChange(oldLayer, newConfig)));
   };
 
+  handleListItemClick = (mapType) => {
+    this.selectMap = mapType;
+    this.setState({
+      open: true,
+      checked: mapType,
+      category: this.mapFixedBins.includes(mapType)? "6": this.state.category
+    });
+  };
+
+  isChecked = (mapType) => {
+    return mapType == this.selectMap;
+  };
+
+  textFieldChange = (event) => {
+    this.setState({
+      open: true,
+      checked: this.state.checked,
+      category: event.target.value,
+    });
+  };
+
   render() {
       return (
           <div style={this.floatLeftStyle}>
@@ -150,26 +187,46 @@ export default class GeoDaMapButton extends React.Component {
               />
               <Dialog onClose={this.handleClose} aria-labelledby="customized-dialog-title" open={this.state.open}>
                 <DialogTitle id="customized-dialog-title" onClose={this.handleClose}>
-                  Modal title
+                  <FormattedMessage id={'selectMapType'} />
                 </DialogTitle>
                 <DialogContent dividers>
-                  <Typography gutterBottom>
-                    Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-                    in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                  </Typography>
-                  <Typography gutterBottom>
-                    Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                    lacus vel augue laoreet rutrum faucibus dolor auctor.
-                  </Typography>
-                  <Typography gutterBottom>
-                    Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-                    scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-                    auctor fringilla.
-                  </Typography>
+                <List>
+                {Object.keys(this.mapTypes).map((mapType) => (
+                  <ListItem button onClick={() => this.handleListItemClick(mapType)} key={mapType}>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <MapTwoToneIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText primary={mapType} />
+                    <ListItemSecondaryAction>
+                      <Checkbox edge="end" disabled checked={this.state.checked==mapType} />
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                ))}
+                </List>
+                <TextField
+                  autoFocus
+                  required
+                  disabled={this.mapFixedBins.includes(this.state.checked)}
+                  margin="dense"
+                  id="number_categories"
+                  label="Number of Categories"
+                  type="number"
+                  //defaultValue="6"
+                  value={this.state.category}
+                  onChange={this.textFieldChange}
+                  variant="filled"
+                  helperText="Some important textSome important textSome important textSome important textSome important textSome important text"
+                  fullWidth
+                />
                 </DialogContent>
                 <DialogActions>
+                  <Button autoFocus onClick={this.createThemeMap} color="primary">
+                    <FormattedMessage id={'createMap'} />
+                  </Button>
                   <Button autoFocus onClick={this.handleClose} color="primary">
-                    Save changes
+                    <FormattedMessage id={'close'} />
                   </Button>
                 </DialogActions>
               </Dialog>

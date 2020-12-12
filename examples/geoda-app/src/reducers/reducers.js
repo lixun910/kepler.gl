@@ -8,7 +8,10 @@ export const initialState = {
     loaded: false,
     file_ids : {},
     show_verion: false,
-    jsgeoda: null
+    jsgeoda: null,
+    locale: 'en',
+    mapID: 'geodaMap',
+    fields: null
 };
 
 // REDUCER
