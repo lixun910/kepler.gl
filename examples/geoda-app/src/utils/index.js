@@ -4,5 +4,6 @@ export {
 
 export {
   hexToRgb,
+  hexToRgbStr,
   colorbrewer
 } from './colorbrewer';

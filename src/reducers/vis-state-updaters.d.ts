@@ -343,6 +343,8 @@ export function layerDataIdChangeUpdater(
     oldLayer: Layer;
     newConfig: {
       dataId: string;
+      layerData: Object;
+      visConfig: Object;
     };
   }
 ): VisState;

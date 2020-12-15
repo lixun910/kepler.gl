@@ -8,39 +8,23 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import MapTwoToneIcon from '@material-ui/icons/MapTwoTone';
-import Checkbox from '@material-ui/core/Checkbox';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import TextField from '@material-ui/core/TextField';
-import {FormattedMessage} from 'react-intl'
+
+import {FormattedMessage} from 'react-intl';
 
 // import action and forward dispatcher
 import {wrapTo, layerConfigChange} from 'kepler.gl/actions';
-import {getDataByFieldName, colorbrewer, hexToRgb} from '../utils'
 
-const styles = (theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
+
+import {getDataByFieldName, colorbrewer, hexToRgb, hexToRgbStr} from '../utils'
+import VariableSelect from './field-selector';
+import MapTypeSelect from './maptype-selector';
 
 const DialogTitle = withStyles(theme => ({
   root: {
     borderBottom: `1px solid ${theme.palette.divider}`,
     margin: 0,
     padding: theme.spacing(2),
+    width: '400px'
   },
   closeButton: {
     position: 'absolute',
@@ -94,32 +78,10 @@ export default class GeoDaMapButton extends React.Component {
 
   mapID = this.props.mapID;
 
-  state = {
-    open: false,
-    checked: null,
-    category: 6
-  };
-
-  mapTypes = {
-    "Quantile" : "quantile_breaks",
-    "Percentile" : "percentile_breaks",
-    "Box Map (Hinge=1.5)" : "hinge15_breaks",
-    "Box Map (Hinge=3.0)": "hinge30_breaks",
-    "Standard Deviation": "stddev_breaks",
-    "Natural Breaks" : "natural_breaks",
-    "Equal Intervals" : "equalinterval_breaks"
-  };
-
-  mapFixedBins = ["Box Map (Hinge=1.5)", "Box Map (Hinge=3.0)", "Standard Deviation"];
-
-  selectMap = null;
+  state = { open: false };
 
   handleClickOpen = () => {
-    this.setState({
-      open: true,
-      checked: null,
-      category: "6"
-    });
+    this.setState({ open: true });
   };
 
   handleClose = () => {
@@ -129,16 +91,21 @@ export default class GeoDaMapButton extends React.Component {
   createThemeMap = () => {
     // send layerConfigChange action to kepler
     // 0 means always apply on the top layer
+    const varName = this._variableSelect.getSelected();
+    const k = this._mapTypeSelect.getCategoryNumber();
+    const selectedMethod = this._mapTypeSelect.getMapType();
+
     const map_uid = this.props.geoda.map_uid;
     const jsgeoda = this.props.geoda.jsgeoda;
-    const values = getDataByFieldName(this.props.keplerGl[this.mapID].visState.layerData[0].data, 'Crm_prn');
-    const selectedMethod = this.mapTypes[this.state.checked];
-    const k = parseInt(this.state.category);
+
+    const topLayer = this.props.keplerGl[this.mapID].visState.layerOrder[0];
+
+    const values = getDataByFieldName(this.props.keplerGl[this.mapID].visState.layerData[topLayer].data, varName);
     const nb = jsgeoda.custom_breaks(map_uid, selectedMethod, k, null, values);
     const colors = colorbrewer['YlOrBr'][k].map((hex)=>hexToRgb(hex));
 
     const returnFillColor = (obj) => {
-      let x = obj.properties['Crm_prn'];
+      let x = obj.properties[varName];
       for (var i = 1; i < nb.breaks.length; ++i) {
         if (x < nb.breaks[i])
           return colors[i-1];
@@ -146,36 +113,38 @@ export default class GeoDaMapButton extends React.Component {
       return [255,255,255];
     };
 
-    var oldLayer = this.props.keplerGl[this.mapID].visState.layers[0];
+    // used to trigger legend update: adding colorLegends
+    // { "rgba()" : "label1"}
+    var colorLegends = {};
+    for (let i=0; i<k; ++i) {
+      let hex = colorbrewer['YlOrBr'][k][i];
+      let clr = hexToRgbStr(hex);
+      let lbl = '' + nb.breaks[i];
+      colorLegends[clr] = lbl;
+    }
+
+    var oldLayer = this.props.keplerGl[this.mapID].visState.layers[topLayer];
+    const oldLayerData = this.props.keplerGl[this.mapID].visState.layerData[topLayer];
     var newConfig = {
-        color: [0,255,0],  // color is not used but triggering map to redraw
-        layerData: {
-          getFillColor: returnFillColor
+        color: [0,255,0],  // color is not used but can trigger the map to redraw
+        layerData: {getFillColor: returnFillColor},
+        colorField: {
+          name: varName,
+          type: 'integer'
+        }, // trigger updating legend
+        visConfig: {
+          ...oldLayer.config.visConfig,
+          colorRange : {
+            colors: colorbrewer['YlOrBr'][k],
+            colorLegends: colorLegends,
+            colorMap: null // avoid getColorScale() to overwrite custom color
+          }
         }
     };
     this.props.dispatch(wrapTo(this.mapID, layerConfigChange(oldLayer, newConfig)));
+
   };
 
-  handleListItemClick = (mapType) => {
-    this.selectMap = mapType;
-    this.setState({
-      open: true,
-      checked: mapType,
-      category: this.mapFixedBins.includes(mapType)? "6": this.state.category
-    });
-  };
-
-  isChecked = (mapType) => {
-    return mapType == this.selectMap;
-  };
-
-  textFieldChange = (event) => {
-    this.setState({
-      open: true,
-      checked: this.state.checked,
-      category: event.target.value,
-    });
-  };
 
   render() {
       return (
@@ -187,39 +156,16 @@ export default class GeoDaMapButton extends React.Component {
               />
               <Dialog onClose={this.handleClose} aria-labelledby="customized-dialog-title" open={this.state.open}>
                 <DialogTitle id="customized-dialog-title" onClose={this.handleClose}>
-                  <FormattedMessage id={'selectMapType'} />
+                  <FormattedMessage id={'createThemeMap'} />
                 </DialogTitle>
                 <DialogContent dividers>
-                <List>
-                {Object.keys(this.mapTypes).map((mapType) => (
-                  <ListItem button onClick={() => this.handleListItemClick(mapType)} key={mapType}>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <MapTwoToneIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary={mapType} />
-                    <ListItemSecondaryAction>
-                      <Checkbox edge="end" disabled checked={this.state.checked==mapType} />
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-                </List>
-                <TextField
-                  autoFocus
-                  required
-                  disabled={this.mapFixedBins.includes(this.state.checked)}
-                  margin="dense"
-                  id="number_categories"
-                  label="Number of Categories"
-                  type="number"
-                  //defaultValue="6"
-                  value={this.state.category}
-                  onChange={this.textFieldChange}
-                  variant="filled"
-                  helperText="Some important textSome important textSome important textSome important textSome important textSome important text"
-                  fullWidth
-                />
+
+                <VariableSelect
+                  ref={(ref) => this._variableSelect = ref}
+                  fields={this.props.geoda.fields}
+                  fieldType={['integer', 'real']} />
+
+                <MapTypeSelect ref={(ref) => this._mapTypeSelect = ref} />
                 </DialogContent>
                 <DialogActions>
                   <Button autoFocus onClick={this.createThemeMap} color="primary">

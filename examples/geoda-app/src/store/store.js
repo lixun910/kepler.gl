@@ -1,9 +1,11 @@
 import keplerGlReducer, {uiStateUpdaters, visStateUpdaters} from "kepler.gl/reducers";
 import {enhanceReduxMiddleware} from 'kepler.gl/middleware';
 import {createStore, combineReducers, applyMiddleware, compose} from "redux";
-import appReducer from '../reducers/reducers';
 import window from 'global/window';
+
+import appReducer from '../reducers/reducers';
 import {loadJsgeoda} from '../actions/actions';
+import {GEODA_MAP_ID} from '../constants';
 
 const customizedKeplerGlReducer = keplerGlReducer.initialState({
     uiState: {
@@ -15,7 +17,7 @@ const customizedKeplerGlReducer = keplerGlReducer.initialState({
       mapControls: {
         ...uiStateUpdaters.DEFAULT_MAP_CONTROLS,
         visibleLayers: {show: true},
-        mapLegend: {show: false, active: false},
+        mapLegend: {show: true, active: false},
         toggle3d: {show: true},
         splitMap: {show: false}
       },
@@ -81,6 +83,14 @@ const composedReducer = (state, action) => {
       break;
 
     case '@@kepler.gl/LAYER_CONFIG_CHANGE':
+      if ('layerData' in action.payload.newConfig) {
+        // in case of GeoDa choropleth map, show legend
+        state.keplerGl[GEODA_MAP_ID].uiState.mapControls.mapLegend.show = true;
+        state.keplerGl[GEODA_MAP_ID].uiState.mapControls.mapLegend.active = true;
+      }
+      break;
+
+    case '@@kepler.gl/TOGGLE_MAP_CONTROL':
       break;
   }
   return reducers(state, action);

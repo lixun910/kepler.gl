@@ -1,5 +1,5 @@
 const en = {
-  selectMapType: "Select a Map Type:",
+  createThemeMap: "Create a Choropleth Map:",
   quantileMap : 'Quantile Map',
   createMap : 'Createa Map',
   close : 'Close',

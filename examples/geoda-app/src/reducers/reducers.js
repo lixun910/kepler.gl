@@ -1,6 +1,7 @@
 import {handleActions} from 'redux-actions';
 import {INIT, SHOW_GEODA_INFO} from '../actions/actions'
 
+import {GEODA_MAP_ID} from '../constants';
 
 // INITIAL_STATE
 export const initialState = {
@@ -10,8 +11,8 @@ export const initialState = {
     show_verion: false,
     jsgeoda: null,
     locale: 'en',
-    mapID: 'geodaMap',
-    fields: null
+    mapID: GEODA_MAP_ID,
+    fields: []
 };
 
 // REDUCER

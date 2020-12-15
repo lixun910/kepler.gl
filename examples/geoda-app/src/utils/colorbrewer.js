@@ -7,6 +7,15 @@ export function hexToRgb(hex) {
   ] : null;
 }
 
+export function hexToRgbStr(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? 'rgb(' +
+    parseInt(result[1], 16) + ',' +
+    parseInt(result[2], 16) + ',' +
+    parseInt(result[3], 16) +
+  ')' : '';
+}
+
 export const colorbrewer = {schemeGroups: {
   sequential: ["BuGn","BuPu","GnBu","OrRd","PuBu","PuBuGn","PuRd","RdPu","YlGn","YlGnBu","YlOrBr","YlOrRd"],
   singlehue:["Blues","Greens","Greys","Oranges","Purples","Reds"],

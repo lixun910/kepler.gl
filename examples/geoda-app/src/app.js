@@ -22,7 +22,7 @@ class App extends Component {
         //this.props.dispatch(wrapTo('map1', addDataToMap({datasets: sampleData,config})));
     }
 
-    mapID = "map1";
+    mapID = this.props.geoda.mapID;
 
     localeMessagesSelector = createSelector(
       props => pmessages,
@@ -32,8 +32,6 @@ class App extends Component {
     localeMessages = (locale) => messages[locale];
 
     render() {
-      const { geoda: {modal} } = this.props;
-
       return (
         <div style={{position: 'absolute', width: '100%', height: '100%'}}>
           <IntlProvider locale={this.props.geoda.locale} messages={this.localeMessages(this.props.geoda.locale)} defaultLocale="en">

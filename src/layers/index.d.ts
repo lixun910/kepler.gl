@@ -43,6 +43,9 @@ export type LayerConfig = {
   animation: {
     enabled: boolean;
   };
+
+  // allow to overwrite layerData function e.g. getFillColor
+  layerData: Object;
 };
 
 export type VisualChannel = {
