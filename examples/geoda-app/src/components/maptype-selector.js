@@ -27,6 +27,7 @@ const mapTypes = {
 };
 
 const mapFixedBins = [
+  "Percentile",
   "Box Map (Hinge=1.5)",
   "Box Map (Hinge=3.0)",
   "Standard Deviation"
@@ -36,7 +37,7 @@ export default class MapTypeSelect extends React.Component {
   //classes = useStyles();
 
   state = {
-    mapType: '',
+    mapType: 'Box Map (Hinge=1.5)',
     category: '6'
   };
 

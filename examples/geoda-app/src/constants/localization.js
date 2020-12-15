@@ -1,5 +1,5 @@
 const en = {
-  createThemeMap: "Create a Choropleth Map:",
+  createThemeMap: "Create Choropleth Map:",
   quantileMap : 'Quantile Map',
   createMap : 'Createa Map',
   close : 'Close',

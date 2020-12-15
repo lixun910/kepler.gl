@@ -23,7 +23,7 @@ import {showDatasetTable, wrapTo, layerConfigChange} from 'kepler.gl/actions';
 class GeoDaButton extends React.Component {
     // this.props
     floatLeftStyle = {
-        margin: '10px',
+        margin: '5px',
         display: 'inline-block',
         width: '36px',
         height: '36px'
@@ -68,7 +68,7 @@ export default class GeoDaToolbar extends React.Component {
         zIndex: '100',
         width: '800px',
         height: '50px',
-        padding: '10px',
+        padding: '10px 0px 0px 10px',
         backgroundColor: '#eee',
         backgroundImage: 'linear-gradient(#eee, #ccc)',
         boxShadow: "5px 5px 20px black",
@@ -150,6 +150,19 @@ export default class GeoDaToolbar extends React.Component {
                 <GeoDaButton key="5" src="./img/weights.png" tooltip="Weights" handler={this.handlerGeoDaTable} />
                 <Divider key="-3" orientation="vertical" flexItem />
                 <GeoDaMapButton key="6" src="./img/classify.png" tooltip="Maps and Rates" {...this.props} />
+                <GeoDaButton key="7" src="./img/cartogram.png" tooltip="Cartogram" handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="8" src="./img/animation.png" tooltip="Animation" handler={this.handlerGeoDaTable} />
+                <Divider key="-4" orientation="vertical" flexItem />
+                <GeoDaButton key="9" src="./img/histogram.png" tooltip="Histogram" handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="10" src="./img/boxplot.png" tooltip="Box plot" handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="11" src="./img/scatterplot.png" tooltip="Scatter" handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="12" src="./img/scattermatrix.png" tooltip="Scatter Matrix" handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="13" src="./img/pcp.png" tooltip="Parallel Coordinate" handler={this.handlerGeoDaTable} />
+                <Divider key="-5" orientation="vertical" flexItem />
+                <GeoDaButton key="14" src="./img/clustering.png" tooltip="Clustering" handler={this.handlerGeoDaTable} />
+                <Divider key="-6" orientation="vertical" flexItem />
+                <GeoDaButton key="15" src="./img/moranscatter.png" tooltip="Moran Scatter" handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="16" src="./img/sa.png" tooltip="Spatial Autocorrelation" handler={this.handlerGeoDaTable} />
                 </Grid>
               </div>
             </div>

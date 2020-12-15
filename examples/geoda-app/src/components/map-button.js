@@ -63,14 +63,20 @@ const DialogActions = withStyles(theme => ({
 
 const COLOR_NAME = {
   'natural_breaks': 'YlOrBr',
-  'quantile_breaks': 'YlOrBr'
+  'quantile_breaks': 'YlOrBr',
+  'percentile_breaks': 'BuRd',
+  'hinge15_breaks': 'BuRd',
+  'hinge30_breaks': 'BuRd',
+  'stddev_breaks': 'BuRd',
+  'natural_breaks': 'YlOrBr',
+  'equaninterval_breaks': 'YlOrBr',
 };
 
 
 export default class GeoDaMapButton extends React.Component {
   // this.props
   floatLeftStyle = {
-      margin: '10px',
+      margin: '5px',
       display: 'inline-block',
       width: '36px',
       height: '36px'
@@ -88,13 +94,27 @@ export default class GeoDaMapButton extends React.Component {
     this.setState({ open: false });
   };
 
+  formatNumeric = (val) => {
+    if (val == Infinity || val == -Infinity) {
+      return val;
+    } else if (val === Number(val)) {
+      return val;
+    } else {
+      return val.toFixed(2);
+    }
+  };
+
+  printRange = (v1, v2) => {
+    return '[' + this.formatNumeric(v1) + ', ' + this.formatNumeric(v2) + ')';
+  };
+
   createThemeMap = () => {
     // send layerConfigChange action to kepler
     // 0 means always apply on the top layer
     const varName = this._variableSelect.getSelected();
     const k = this._mapTypeSelect.getCategoryNumber();
     const selectedMethod = this._mapTypeSelect.getMapType();
-
+    const colorName = COLOR_NAME[selectedMethod];
     const map_uid = this.props.geoda.map_uid;
     const jsgeoda = this.props.geoda.jsgeoda;
 
@@ -102,7 +122,7 @@ export default class GeoDaMapButton extends React.Component {
 
     const values = getDataByFieldName(this.props.keplerGl[this.mapID].visState.layerData[topLayer].data, varName);
     const nb = jsgeoda.custom_breaks(map_uid, selectedMethod, k, null, values);
-    const colors = colorbrewer['YlOrBr'][k].map((hex)=>hexToRgb(hex));
+    const colors = colorbrewer[colorName][k].map((hex)=>hexToRgb(hex));
 
     const returnFillColor = (obj) => {
       let x = obj.properties[varName];
@@ -117,9 +137,9 @@ export default class GeoDaMapButton extends React.Component {
     // { "rgba()" : "label1"}
     var colorLegends = {};
     for (let i=0; i<k; ++i) {
-      let hex = colorbrewer['YlOrBr'][k][i];
+      let hex = colorbrewer[colorName][k][i];
       let clr = hexToRgbStr(hex);
-      let lbl = '' + nb.breaks[i];
+      let lbl = this.printRange(nb.breaks[i], nb.breaks[i+1]);
       colorLegends[clr] = lbl;
     }
 
@@ -135,7 +155,7 @@ export default class GeoDaMapButton extends React.Component {
         visConfig: {
           ...oldLayer.config.visConfig,
           colorRange : {
-            colors: colorbrewer['YlOrBr'][k],
+            colors: colorbrewer[colorName][k],
             colorLegends: colorLegends,
             colorMap: null // avoid getColorScale() to overwrite custom color
           }
