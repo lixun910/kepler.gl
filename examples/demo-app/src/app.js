@@ -23,6 +23,7 @@ import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import styled, {ThemeProvider} from 'styled-components';
 import window from 'global/window';
 import {connect} from 'react-redux';
+import {IntlProvider} from 'react-intl';
 
 import {theme} from 'kepler.gl/styles';
 import Banner from './components/banner';
@@ -30,7 +31,7 @@ import Announcement, {FormLink} from './components/announcement';
 import {replaceLoadDataModal} from './factories/load-data-modal';
 import {replaceMapControl} from './factories/map-control';
 import {replacePanelHeader} from './factories/panel-header';
-import {AUTH_TOKENS} from './constants/default-settings';
+import {AUTH_TOKENS, GEODA_MAP_ID} from './constants/default-settings';
 import {messages} from './constants/localization';
 
 import {
@@ -42,6 +43,8 @@ import {
 
 import {loadCloudMap} from 'kepler.gl/actions';
 import {CLOUD_PROVIDERS} from './cloud-providers';
+
+import GeoDaToolbar from './components/toolbar';
 
 const KeplerGl = require('kepler.gl/components').injectComponents([
   replaceLoadDataModal(),
@@ -357,6 +360,8 @@ class App extends Component {
     }
   };
 
+  localeMessages = (locale) => messages[locale];
+
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -376,6 +381,9 @@ class App extends Component {
           >
             <Announcement onDisable={this._disableBanner} />
           </Banner>
+          <IntlProvider locale={this.props.demo.geoda.locale} messages={this.localeMessages(this.props.demo.geoda.locale)} defaultLocale="en">
+            <GeoDaToolbar dispatch={this.props.dispatch} mapID={this.props.demo.geoda.mapID} keplerGl={this.props.demo.keplerGl} geoda={this.props.demo.geoda} />
+          </IntlProvider>
           <div
             style={{
               transition: 'margin 1s, height 1s',
@@ -390,7 +398,7 @@ class App extends Component {
               {({height, width}) => (
                 <KeplerGl
                   mapboxApiAccessToken={AUTH_TOKENS.MAPBOX_TOKEN}
-                  id="map"
+                  id={GEODA_MAP_ID}
                   /*
                    * Specify path to keplerGl state, because it is not mount at the root
                    */

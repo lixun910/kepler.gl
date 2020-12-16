@@ -16,10 +16,10 @@ import Grid from '@material-ui/core/Grid';
 
 import GeoDaMapButton from './toolbar/map-button';
 import GeoDaWeightsButton from './toolbar/map-button';
-import {hideAndShowSidePanel, openFileDialog, showGeoDaInfo, classifyMap} from '../actions/actions';
+import {openFileDialog} from '../actions';
 
 // import action and forward dispatcher
-import {showDatasetTable, wrapTo, layerConfigChange} from 'kepler.gl/actions';
+import {showDatasetTable, wrapTo} from 'kepler.gl/actions';
 
 class GeoDaButton extends React.Component {
 
@@ -71,7 +71,7 @@ export default class GeoDaToolbar extends React.Component {
         marginLeft : '-400px',
         zIndex: '100',
         width: '800px',
-        height: '50px',
+        height: '60px',
         padding: '10px 0px 0px 10px',
         backgroundColor: '#eee',
         backgroundImage: 'linear-gradient(#eee, #ccc)',
@@ -88,12 +88,10 @@ export default class GeoDaToolbar extends React.Component {
     loaded = this.props.geoda.loaded;
 
     handlerGeoDaInfo = () => {
-        //this.props.dispatch(wrapTo(this.mapID, showGeoDaInfo()));
-        this.props.dispatch(showGeoDaInfo());
     };
     handlerGeoDaOpen = () => { this.props.dispatch(wrapTo(this.mapID, openFileDialog())); };
     handlerGeoDaClose = () => {this.props.dispatch(wrapTo(this.mapID, openFileDialog())); };
-    handlerGeoDaSave = () => {this.props.dispatch(wrapTo(this.mapID, hideAndShowSidePanel())); };
+    handlerGeoDaSave = () => {this.props.dispatch(wrapTo(this.mapID, openFileDialog())); };
     handlerGeoDaTable = () => {
         // this.props.visStateActions.loadFiles(fileList);
         const dataId = this.props.keplerGl[this.mapID].visState.layers[0].config.dataId;

@@ -66,3 +66,5 @@ export const AUTH_TOKENS = {
   EXPORT_MAPBOX_TOKEN: process.env.MapboxExportToken, // eslint-disable-line
   CARTO_CLIENT_ID: process.env.CartoClientId // eslint-disable-line
 };
+
+export const GEODA_MAP_ID = 'map';

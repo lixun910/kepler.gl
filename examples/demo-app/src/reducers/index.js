@@ -34,12 +34,14 @@ import {
   SET_SAMPLE_LOADING_STATUS
 } from '../actions';
 
-import {AUTH_TOKENS, DEFAULT_FEATURE_FLAGS} from '../constants/default-settings';
+import {AUTH_TOKENS, DEFAULT_FEATURE_FLAGS, GEODA_MAP_ID} from '../constants/default-settings';
 import {generateHashId} from '../utils/strings';
+
+import {loadJsgeoda} from '../actions';
 
 // INITIAL_APP_STATE
 const initialAppState = {
-  appName: 'example',
+  appName: 'geoda',
   loaded: false,
   sampleMaps: [], // this is used to store sample maps fetch from a remote json file
   isMapLoading: false, // determine whether we are loading a sample map,
@@ -49,7 +51,13 @@ const initialAppState = {
   //   message: null
   // }
   // eventually we may have an async process to fetch these from a remote location
-  featureFlags: DEFAULT_FEATURE_FLAGS
+  featureFlags: DEFAULT_FEATURE_FLAGS,
+  file_ids : {},
+  show_verion: false,
+  jsgeoda: null,
+  mapID: GEODA_MAP_ID,
+  fields: [],
+  locale: 'en'
 };
 
 // App reducer
@@ -73,29 +81,60 @@ export const appReducer = handleActions(
 
 const {DEFAULT_EXPORT_MAP} = uiStateUpdaters;
 
+const customizedKeplerGlReducer = keplerGlReducer.initialState({
+  // In order to provide single file export functionality
+  // we are going to set the mapbox access token to be used
+  // in the exported file
+  uiState: {
+    currentModal: null,
+    exportMap: {
+      ...DEFAULT_EXPORT_MAP,
+      [EXPORT_MAP_FORMATS.HTML]: {
+        ...DEFAULT_EXPORT_MAP[[EXPORT_MAP_FORMATS.HTML]],
+        exportMapboxAccessToken: AUTH_TOKENS.EXPORT_MAPBOX_TOKEN
+      }
+    }
+  },
+  visState: {
+    loaders: [], // Add additional loaders.gl loaders here
+    loadOptions: {} // Add additional loaders.gl loader options here
+  }
+})
+// handle additional actions
+.plugin({
+  HIDE_AND_SHOW_SIDE_PANEL: (state, action) => ({
+    ...state,
+    uiState: {
+      ...state.uiState,
+      readOnly: !state.uiState.readOnly
+    }
+  }),
+  OPEN_FILE_DIALOG: (state, action) => ({
+    ...state,
+    uiState: {
+      ...state.uiState,
+      currentModal: 'addData'
+    }
+  }),
+  SHOW_TABLE: (state, action) => ({
+    ...state,
+    uiState: {
+      ...state.uiState,
+      currentModal: 'dataTable'
+    },
+    visState: {
+      ...state.visState,
+      editingDataset: action.payload
+    }
+  }),
+});
+
 // combine app reducer and keplerGl reducer
 // to mimic the reducer state of kepler.gl website
 const demoReducer = combineReducers({
   // mount keplerGl reducer
-  keplerGl: keplerGlReducer.initialState({
-    // In order to provide single file export functionality
-    // we are going to set the mapbox access token to be used
-    // in the exported file
-    uiState: {
-      exportMap: {
-        ...DEFAULT_EXPORT_MAP,
-        [EXPORT_MAP_FORMATS.HTML]: {
-          ...DEFAULT_EXPORT_MAP[[EXPORT_MAP_FORMATS.HTML]],
-          exportMapboxAccessToken: AUTH_TOKENS.EXPORT_MAPBOX_TOKEN
-        }
-      }
-    },
-    visState: {
-      loaders: [], // Add additional loaders.gl loaders here
-      loadOptions: {} // Add additional loaders.gl loader options here
-    }
-  }),
-  app: appReducer
+  keplerGl:  customizedKeplerGlReducer,
+  geoda: appReducer
 });
 
 // this can be moved into a action and call kepler.gl action
@@ -185,6 +224,39 @@ const composedUpdaters = {
 const composedReducer = (state, action) => {
   if (composedUpdaters[action.type]) {
     return composedUpdaters[action.type](state, action);
+  }
+  switch (action.type) {
+    case '@@kepler.gl/LOAD_FILES':
+      console.log("load jsgeoda here");
+      loadJsgeoda(state, action);
+      break;
+
+    case '@@kepler.gl/PROCESS_FILE_CONTENT':
+      console.log("get geojson content here");
+      break;
+
+    case '@@kepler.gl/LOAD_FILES_SUCCESS':
+      // do update; action result has all fields information
+      // e.g. {name:'REGION', tableFieldIndex:2, type: 'integer', analyzeTYPE: 'INT'}
+      // info {label: "natregimes.geojson", format:"geojson"}
+      console.log("after load geojson");
+      state.geoda.loaded = true; // enable geoda features
+      state.geoda.fields = action.result[0].data.fields; // 0 means the top one
+      break;
+
+    case '@@kepler.gl/LAYER_CONFIG_CHANGE':
+      if ('layerData' in action.payload.newConfig) {
+        // in case of GeoDa choropleth map, show legend
+        state.keplerGl[GEODA_MAP_ID].uiState.mapControls.mapLegend = {show: true, active: true};
+      }
+      break;
+
+    case '@@kepler.gl/TOGGLE_MAP_CONTROL':
+      break;
+
+    case 'OPEN_FILE_DIALOG':
+      //state.keplerGl[GEODA_MAP_ID].uiState.currentModal = 'addData';
+      break;
   }
   return demoReducer(state, action);
 };

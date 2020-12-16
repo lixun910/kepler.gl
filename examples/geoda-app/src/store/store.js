@@ -79,6 +79,7 @@ const composedReducer = (state, action) => {
       // e.g. {name:'REGION', tableFieldIndex:2, type: 'integer', analyzeTYPE: 'INT'}
       // info {label: "natregimes.geojson", format:"geojson"}
       console.log("after load geojson");
+      state.geoda.loaded = true; // enable geoda features
       state.geoda.fields = action.result[0].data.fields; // 0 means the top one
       break;
 

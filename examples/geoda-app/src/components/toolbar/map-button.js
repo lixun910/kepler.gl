@@ -1,65 +1,14 @@
-import React, { useState }  from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import React  from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
-
 import {FormattedMessage} from 'react-intl';
-
-// import action and forward dispatcher
 import {wrapTo, layerConfigChange} from 'kepler.gl/actions';
 
-
-import {getDataByFieldName, colorbrewer, hexToRgb, hexToRgbStr} from '../utils'
-import VariableSelect from './field-selector';
+import {getDataByFieldName, colorbrewer, hexToRgb, hexToRgbStr} from '../../utils';
+import VariableSelect from '../utils/field-selector';
 import MapTypeSelect from './maptype-selector';
-
-const DialogTitle = withStyles(theme => ({
-  root: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    margin: 0,
-    padding: theme.spacing(2),
-    width: '400px'
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-}))(props => {
-  const { children, classes, onClose } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.root}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton aria-label="Close" className={classes.closeButton} onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
-
-const DialogContent = withStyles(theme => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
-
-const DialogActions = withStyles(theme => ({
-  root: {
-    borderTop: `1px solid ${theme.palette.divider}`,
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
+import {DialogTitle, DialogContent, DialogActions} from '../modal-dlg';
+import DefaultButton from './default-button';
 
 const COLOR_NAME = {
   'natural_breaks': 'YlOrBr',
@@ -73,26 +22,7 @@ const COLOR_NAME = {
 };
 
 
-export default class GeoDaMapButton extends React.Component {
-  // this.props
-  floatLeftStyle = {
-      margin: '5px',
-      display: 'inline-block',
-      width: '36px',
-      height: '36px'
-  };
-
-  mapID = this.props.mapID;
-
-  state = { open: false };
-
-  handleClickOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
+export default class GeoDaMapButton extends DefaultButton {
 
   formatNumeric = (val) => {
     if (val == Infinity || val == -Infinity) {
@@ -111,16 +41,16 @@ export default class GeoDaMapButton extends React.Component {
   createThemeMap = () => {
     // send layerConfigChange action to kepler
     // 0 means always apply on the top layer
+    const mapID = this.getMapId();
     const varName = this._variableSelect.getSelected();
     const k = this._mapTypeSelect.getCategoryNumber();
     const selectedMethod = this._mapTypeSelect.getMapType();
     const colorName = COLOR_NAME[selectedMethod];
-    const map_uid = this.props.geoda.map_uid;
-    const jsgeoda = this.props.geoda.jsgeoda;
+    const map_uid = this.getMapUID();
+    const jsgeoda = this.getJsGeoDa();
+    const oldLayerData = this.getTopLayerData();
 
-    const topLayer = this.props.keplerGl[this.mapID].visState.layerOrder[0];
-
-    const values = getDataByFieldName(this.props.keplerGl[this.mapID].visState.layerData[topLayer].data, varName);
+    const values = getDataByFieldName(oldLayerData.data, varName);
     const nb = jsgeoda.custom_breaks(map_uid, selectedMethod, k, null, values);
     const colors = colorbrewer[colorName][k].map((hex)=>hexToRgb(hex));
 
@@ -143,8 +73,8 @@ export default class GeoDaMapButton extends React.Component {
       colorLegends[clr] = lbl;
     }
 
-    var oldLayer = this.props.keplerGl[this.mapID].visState.layers[topLayer];
-    const oldLayerData = this.props.keplerGl[this.mapID].visState.layerData[topLayer];
+    var oldLayer = this.getTopLayer();
+
     var newConfig = {
         color: [0,255,0],  // color is not used but can trigger the map to redraw
         layerData: {getFillColor: returnFillColor},
@@ -161,14 +91,13 @@ export default class GeoDaMapButton extends React.Component {
           }
         }
     };
-    this.props.dispatch(wrapTo(this.mapID, layerConfigChange(oldLayer, newConfig)));
-
+    this.props.dispatch(wrapTo(mapID, layerConfigChange(oldLayer, newConfig)));
   };
 
 
   render() {
       return (
-          <div style={this.floatLeftStyle}>
+          <div style={this.getButtonStyle()}>
               <img className="GeoDa-Button"
                   src={this.props.src}
                   alt={this.props.tooltip}

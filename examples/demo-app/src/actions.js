@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+import {createAction} from 'redux-actions';
 import {push} from 'react-router-redux';
 import {request, text as requestText, json as requestJson} from 'd3-request';
 import {loadFiles, toggleModal} from 'kepler.gl/actions';
@@ -28,6 +29,8 @@ import {
   MAP_CONFIG_URL
 } from './constants/default-settings';
 import {parseUri} from './utils/url';
+
+import jsgeoda from 'jsgeoda';
 
 // CONSTANTS
 export const INIT = 'INIT';
@@ -339,4 +342,29 @@ export function loadSampleConfigurations(sampleMapId = null) {
       }
     });
   };
+}
+
+// Actions for GeoDa
+export const hideAndShowSidePanel = createAction('HIDE_AND_SHOW_SIDE_PANEL');
+
+export const openFileDialog = createAction('OPEN_FILE_DIALOG');
+
+export function loadJsgeoda(state, action) {
+  jsgeoda.New().then(geoda => {
+    state["geoda"]["jsgeoda"] = geoda;
+    const loadFiles = action.payload.files;
+    for (let i=0; i<loadFiles.length; ++i) {
+      const f = loadFiles[i];
+      state.geoda.file_ids[f.name] = true;
+      var fileReader = new FileReader();
+      fileReader.onload = function (event) {
+        const ab = event.target.result;
+        const fname = event.target.fileName;
+        let map_uid = geoda.ReadGeojsonMap(fname, ab);
+        state["geoda"]["map_uid"] = map_uid;
+      };
+      fileReader.readAsArrayBuffer(f);
+      fileReader.fileName = f.name;
+    }
+  });
 }

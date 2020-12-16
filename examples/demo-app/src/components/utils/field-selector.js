@@ -22,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default class VariableSelect extends React.Component {
-  //classes = useStyles();
+  // props: fields from kepler.gl;
+  // props: filedTyp ['integer', 'real','string']
 
   state = {selected: ''};
 

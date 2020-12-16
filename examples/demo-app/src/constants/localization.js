@@ -33,7 +33,11 @@ const en = {
     '* CORS policy must be defined on your custom url domain in order to be accessible. For more info ',
   'loadRemoteMap.clickHere':
     '<a rel="noopener noreferrer" target="_blank" href="{corsLink}">click here</a>',
-  'loadRemoteMap.fetch': 'Fetch'
+  'loadRemoteMap.fetch': 'Fetch',
+  'createThemeMap': "Create Choropleth Map:",
+  'quantileMap': 'Quantile Map',
+  'createMap' : 'Createa Map',
+  'close' : 'Close',
 };
 
 export const messages = {
