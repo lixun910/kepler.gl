@@ -52,12 +52,16 @@ const initialAppState = {
   // }
   // eventually we may have an async process to fetch these from a remote location
   featureFlags: DEFAULT_FEATURE_FLAGS,
+
   file_ids : {},
   show_verion: false,
+  locale: 'en',
   jsgeoda: null,
   mapID: GEODA_MAP_ID,
-  fields: [],
-  locale: 'en'
+  currentMapUId : '',
+  mapUIds : [],
+  fields: {},
+  weights: {}
 };
 
 // App reducer
@@ -241,7 +245,10 @@ const composedReducer = (state, action) => {
       // info {label: "natregimes.geojson", format:"geojson"}
       console.log("after load geojson");
       state.geoda.loaded = true; // enable geoda features
-      state.geoda.fields = action.result[0].data.fields; // 0 means the top one
+      action.result.map((result, index) => {
+        const uid = result.info.label;
+        state.geoda.fields[uid] = result.data.fields; // 0 means the top one
+      });
       break;
 
     case '@@kepler.gl/LAYER_CONFIG_CHANGE':

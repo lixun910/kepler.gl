@@ -382,7 +382,7 @@ class App extends Component {
             <Announcement onDisable={this._disableBanner} />
           </Banner>
           <IntlProvider locale={this.props.demo.geoda.locale} messages={this.localeMessages(this.props.demo.geoda.locale)} defaultLocale="en">
-            <GeoDaToolbar dispatch={this.props.dispatch} mapID={this.props.demo.geoda.mapID} keplerGl={this.props.demo.keplerGl} geoda={this.props.demo.geoda} />
+            <GeoDaToolbar {...this.props} />
           </IntlProvider>
           <div
             style={{

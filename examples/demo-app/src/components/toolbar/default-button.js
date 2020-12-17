@@ -1,6 +1,13 @@
 import React  from 'react';
 
 export default class DefaultButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false
+    };
+  }
+
   getButtonStyle = () => {
     return {
       margin: '5px',
@@ -11,8 +18,6 @@ export default class DefaultButton extends React.Component {
       filter: this.props.enabled ? '' : 'grayscale(100%)'
   }};
 
-  state = { open: false };
-
   handleClickOpen = () => {
     this.setState({ open: true });
   };
@@ -21,26 +26,31 @@ export default class DefaultButton extends React.Component {
     this.setState({ open: false });
   };
 
-  getMapId = () => this.props.mapID;
+  getMapId = () => this.props.demo.geoda.mapID;
 
-  getMapUID = () => this.props.geoda.map_uid;
+  getMapUID = () => this.props.demo.geoda.currentMapUid;
 
-  getJsGeoDa = () => this.props.geoda.jsgeoda;
+  getJsGeoDa = () => this.props.demo.geoda.jsgeoda;
 
   getTopLayerIndex = () => {
     const mapId = this.getMapId();
-    return this.props.keplerGl[mapId].visState.layerOrder[0];
+    return this.props.demo.keplerGl[mapId].visState.layerOrder[0];
   };
 
   getTopLayerData = () => {
     const mapId = this.getMapId();
     const topLayer = this.getTopLayerIndex();
-    return this.props.keplerGl[mapId].visState.layerData[topLayer];
+    return this.props.demo.keplerGl[mapId].visState.layerData[topLayer];
   };
 
   getTopLayer = () => {
     const mapId = this.getMapId();
     const topLayer = this.getTopLayerIndex();
-    return this.props.keplerGl[mapId].visState.layers[topLayer];
+    return this.props.demo.keplerGl[mapId].visState.layers[topLayer];
   };
+
+  getFields = () => {
+    const currentMapUId = this.getMapUID();
+    return this.props.demo.geoda.fields[currentMapUId];
+  }
 }

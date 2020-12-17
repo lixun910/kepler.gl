@@ -361,7 +361,8 @@ export function loadJsgeoda(state, action) {
         const ab = event.target.result;
         const fname = event.target.fileName;
         let map_uid = geoda.ReadGeojsonMap(fname, ab);
-        state["geoda"]["map_uid"] = map_uid;
+        state["geoda"]["mapUIds"].push(map_uid);
+        state["geoda"]["currentMapUid"] = map_uid;
       };
       fileReader.readAsArrayBuffer(f);
       fileReader.fileName = f.name;

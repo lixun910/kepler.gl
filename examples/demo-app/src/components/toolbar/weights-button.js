@@ -1,130 +1,134 @@
 import React  from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
+import {
+  Dialog, Box, Button,  Typography,Grid,
+  FormControlLabel, Checkbox
+} from '@material-ui/core';
 import {FormattedMessage} from 'react-intl';
-import {wrapTo, layerConfigChange} from 'kepler.gl/actions';
 
-import {getDataByFieldName, colorbrewer, hexToRgb, hexToRgbStr} from '../../utils';
-import VariableSelect from '../utils/field-selector';
-import MapTypeSelect from './maptype-selector';
 import {DialogTitle, DialogContent, DialogActions} from '../modal-dlg';
 import DefaultButton from './default-button';
-
-const COLOR_NAME = {
-  'natural_breaks': 'YlOrBr',
-  'quantile_breaks': 'YlOrBr',
-  'percentile_breaks': 'BuRd',
-  'hinge15_breaks': 'BuRd',
-  'hinge30_breaks': 'BuRd',
-  'stddev_breaks': 'BuRd',
-  'natural_breaks': 'YlOrBr',
-  'equaninterval_breaks': 'YlOrBr',
-};
-
+import {WeightsList, WeightsMetaTable} from './weights-manager';
+import WeightsCreation from './weights-creation';
 
 export default class GeoDaWeightsButton extends DefaultButton {
 
-  formatNumeric = (val) => {
-    if (val == Infinity || val == -Infinity) {
-      return val;
-    } else if (val === Number(val)) {
-      return val;
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false, // overwrite parent class
+      checked : [],
+      isCreateOpen: false
+    };
+  }
+
+  handleToggle = (value) => () => {
+    const currentIndex = this.state.checked.indexOf(value);
+    const newChecked = [...this.state.checked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
     } else {
-      return val.toFixed(2);
-    }
-  };
-
-  printRange = (v1, v2) => {
-    return '[' + this.formatNumeric(v1) + ', ' + this.formatNumeric(v2) + ')';
-  };
-
-  createThemeMap = () => {
-    // send layerConfigChange action to kepler
-    // 0 means always apply on the top layer
-    const mapID = this.getMapId();
-    const varName = this._variableSelect.getSelected();
-    const k = this._mapTypeSelect.getCategoryNumber();
-    const selectedMethod = this._mapTypeSelect.getMapType();
-    const colorName = COLOR_NAME[selectedMethod];
-    const map_uid = this.getMapUID();
-    const jsgeoda = this.getJsGeoDa();
-    const oldLayerData = this.getTopLayerData();
-
-    const values = getDataByFieldName(oldLayerData.data, varName);
-    const nb = jsgeoda.custom_breaks(map_uid, selectedMethod, k, null, values);
-    const colors = colorbrewer[colorName][k].map((hex)=>hexToRgb(hex));
-
-    const returnFillColor = (obj) => {
-      let x = obj.properties[varName];
-      for (var i = 1; i < nb.breaks.length; ++i) {
-        if (x < nb.breaks[i])
-          return colors[i-1];
-      }
-      return [255,255,255];
-    };
-
-    // used to trigger legend update: adding colorLegends
-    // { "rgba()" : "label1"}
-    var colorLegends = {};
-    for (let i=0; i<k; ++i) {
-      let hex = colorbrewer[colorName][k][i];
-      let clr = hexToRgbStr(hex);
-      let lbl = this.printRange(nb.breaks[i], nb.breaks[i+1]);
-      colorLegends[clr] = lbl;
+      newChecked.splice(currentIndex, 1);
     }
 
-    var oldLayer = this.getTopLayer();
-
-    var newConfig = {
-        color: [0,255,0],  // color is not used but can trigger the map to redraw
-        layerData: {getFillColor: returnFillColor},
-        colorField: {
-          name: varName,
-          type: 'integer'
-        }, // trigger updating legend
-        visConfig: {
-          ...oldLayer.config.visConfig,
-          colorRange : {
-            colors: colorbrewer[colorName][k],
-            colorLegends: colorLegends,
-            colorMap: null // avoid getColorScale() to overwrite custom color
-          }
-        }
-    };
-    this.props.dispatch(wrapTo(mapID, layerConfigChange(oldLayer, newConfig)));
+    this.setState({
+      open: this.state.open,
+      checked: newChecked
+    });
   };
 
+  getCreateOpenStatus = () => {
+    return this.state.isCreateOpen;
+  };
+
+  onCreateClick = () =>  {
+    // create weights dialog
+    this.state.isCreateOpen = true;
+    this.state.open = false;
+    this.setState(this.state);
+  };
+
+  onCreateClose = () => {
+    this.state.isCreateOpen = false;
+    this.state.open = true;
+    this.setState(this.state);
+  }
 
   render() {
+    const divStyle = this.getButtonStyle();
       return (
-          <div style={this.getButtonStyle()}>
+          <div style={divStyle} >
               <img className="GeoDa-Button"
                   src={this.props.src}
                   alt={this.props.tooltip}
                   onClick={this.handleClickOpen}
               />
-              <Dialog onClose={this.handleClose} aria-labelledby="customized-dialog-title" open={this.state.open}>
-                <DialogTitle id="customized-dialog-title" onClose={this.handleClose}>
-                  <FormattedMessage id={'createThemeMap'} />
+              <WeightsCreation isOpen={this.state.isCreateOpen} onCloseClick={this.onCreateClose} />
+              <Dialog onClose={this.handleClose} aria-labelledby="weights-manager-dialog" open={this.state.open}>
+                <DialogTitle id="weights-manager-dialog-title" onClose={this.handleClose}>
+                  <FormattedMessage id={'geoda.weights.managerDialog'} />
                 </DialogTitle>
                 <DialogContent dividers>
-
-                <VariableSelect
-                  ref={(ref) => this._variableSelect = ref}
-                  fields={this.props.geoda.fields}
-                  fieldType={['integer', 'real']} />
-
-                <MapTypeSelect ref={(ref) => this._mapTypeSelect = ref} />
+                <Grid container spacing={1} justify="center" alignItems="center">
+                  <Grid container spacing={1} justify="center" alignItems="center">
+                    <Grid item>
+                      <Button  variant="contained" color="primary" onClick={this.onCreateClick}>
+                        <FormattedMessage id={'geoda.weights.create'} />
+                      </Button>
+                    </Grid>
+                    <Grid item>
+                      <Button  variant="contained" color="primary">Save</Button>
+                    </Grid>
+                    <Grid item>
+                      <Button variant="contained" color="primary">Remove</Button>
+                    </Grid>
+                  </Grid>
+                  <Grid container style={{ margin: '10px'}} justify="center" alignItems="center">
+                    <Grid item xs={10}><WeightsList /></Grid>
+                  </Grid>
+                  <Grid container spacing={1} justify="center" alignItems="center">
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={3}>
+                      <Button size="small" variant="contained">Intersection</Button>
+                    </Grid>
+                    <Grid item xs={2}>
+                      <Button size="small" variant="contained">Union</Button>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Button size="small" variant="contained">Make Symmetric</Button>
+                    </Grid>
+                    <Grid item xs={2}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={false}
+                            name="mutualCheck"
+                            color="primary"
+                          />
+                        }
+                        label="mutual"
+                        size="small"
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container  style={{ margin: '10px'}}  spacing={1} justify="center" alignItems="center">
+                    <Grid item xs={10}><WeightsMetaTable /> </Grid>
+                  </Grid>
+                  <Grid container spacing={1} justify="center" alignItems="center">
+                    <Grid item>
+                      <Button  variant="contained" color="default">Histogram</Button>
+                    </Grid>
+                    <Grid item>
+                      <Button  variant="contained" color="default">Connectivity Map</Button>
+                    </Grid>
+                    <Grid item>
+                      <Button variant="contained" color="default">Connectivity Graph</Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
                 </DialogContent>
-                <DialogActions>
-                  <Button autoFocus onClick={this.createThemeMap} color="primary">
-                    <FormattedMessage id={'createMap'} />
-                  </Button>
-                  <Button autoFocus onClick={this.handleClose} color="primary">
-                    <FormattedMessage id={'close'} />
-                  </Button>
-                </DialogActions>
               </Dialog>
+
           </div>
       );
   }
