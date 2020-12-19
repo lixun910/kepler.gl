@@ -28,9 +28,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export function WeightsList() {
+export function WeightsList(props) {
+  const weightsItems = props.weightsItems;
   const classes = useStyles();
-  const [checked, setChecked] = React.useState([0]);
+  const [checked, setChecked] = React.useState([]);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -47,21 +48,21 @@ export function WeightsList() {
 
   return (
     <List className={classes.root}>
-      {[0, 1, 2, 3,4,5,6,7,8].map((value) => {
-        const labelId = `checkbox-list-label-${value}`;
+      {weightsItems.map((w, idx) => {
+        const labelId = `checkbox-list-label-${idx}`;
 
         return (
-          <ListItem key={value} role={undefined} dense button onClick={handleToggle(value)} classes={{ root: classes.item}}>
+          <ListItem key={idx} role={undefined} dense button onClick={handleToggle(idx)} classes={{ root: classes.item}}>
             <ListItemIcon>
               <Checkbox
                 edge="start"
-                checked={checked.indexOf(value) !== -1}
+                checked={checked.indexOf(idx) !== -1}
                 tabIndex={-1}
                 disableRipple
                 inputProps={{ 'aria-labelledby': labelId }}
               />
             </ListItemIcon>
-            <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+            <ListItemText id={labelId} primary={w.name} />
             <ListItemSecondaryAction>
               <IconButton edge="end" aria-label="Description">
                 <DescriptionIcon />
@@ -84,35 +85,60 @@ const tableStyles = makeStyles({
   },
 });
 
-const rows = [
-  {name: 'Frozen yoghurt1', 'calories': 159},
-  {name: 'Frozen yoghurt2', 'calories': 159},
-  {name: 'Frozen yoghurt3', 'calories': 159},
-  {name: 'Frozen yoghurt4', 'calories': 159},
-  {name: 'Frozen yoghurt5', 'calories': 159},
-];
-
-export function WeightsMetaTable() {
+export function WeightsMetaTable(props) {
+  const weightsMeta = props.weightsMeta;
   const classes = tableStyles();
+
+  const metaList = [
+    'type',
+    'isSymmetric',
+    'numObs',
+    'minNbrs',
+    'maxNbrs',
+    'meanNbrs',
+    'medianNbrs',
+    'sparsity',
+    'density'
+  ];
+
+  const metaNames = [
+    'type',
+    'symmetric',
+    '# observations',
+    'min neighbors',
+    'max neighbors',
+    'mean neighbors',
+    'median neighbors',
+    '% non-zero',
+    'density'
+  ];
 
   return (
     <TableContainer component={Paper} className={classes.table}>
-      <Table stickyHeader aria-label="simple table" size="medium" >
+      <Table stickyHeader aria-label="weights-meta-table" size="medium" >
         <TableHead >
           <TableRow >
-            <TableCell style={{backgroundColor: 'yellowgreen'}}>Dessert (100g serving)</TableCell>
-            <TableCell style={{backgroundColor: 'yellowgreen'}}>Calories</TableCell>
+            <TableCell style={{backgroundColor: 'yellowgreen'}}>
+              Property
+            </TableCell>
+            <TableCell style={{backgroundColor: 'yellowgreen'}}>
+              Value
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell>{row.calories}</TableCell>
-            </TableRow>
-          ))}
+          {metaList.map((meta, idx) => {
+            return (
+              <TableRow key={meta}>
+                <TableCell component="th" scope="row">
+                  {metaNames[idx]}
+                </TableCell>
+                <TableCell>
+                  { weightsMeta ? weightsMeta[meta] : '' }
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>

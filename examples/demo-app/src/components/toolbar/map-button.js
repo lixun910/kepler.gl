@@ -54,7 +54,7 @@ export default class GeoDaMapButton extends DefaultButton {
     const nb = jsgeoda.custom_breaks(map_uid, selectedMethod, k, null, values);
     const colors = colorbrewer[colorName][k].map((hex)=>hexToRgb(hex));
 
-    const returnFillColor = (obj) => {
+    const returnFillColor = (obj, index) => {
       let x = obj.properties[varName];
       for (var i = 1; i < nb.breaks.length; ++i) {
         if (x < nb.breaks[i])

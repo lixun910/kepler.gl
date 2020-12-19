@@ -13,12 +13,14 @@ import React from 'react';
 import Draggable from 'react-draggable';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
+import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 
 // import action and forward dispatcher
 import {showDatasetTable, wrapTo} from 'kepler.gl/actions';
 
 import GeoDaMapButton from './toolbar/map-button';
 import GeoDaWeightsButton from './toolbar/weights-button';
+import GeoDaSAButton from './toolbar/sa-button';
 import {openFileDialog} from '../actions';
 import {GEODA_MAP_ID} from '../constants/default-settings';
 
@@ -46,6 +48,26 @@ class GeoDaButton extends React.Component {
         );
     }
 }
+
+const theme = createMuiTheme({
+  palette: {
+  },
+  typography: {
+    fontSize: 12,
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+  },
+});
 
 export default class GeoDaToolbar extends React.Component {
     toolbarStyle = {
@@ -83,12 +105,15 @@ export default class GeoDaToolbar extends React.Component {
     handlerGeoDaClose = () => { };
     handlerGeoDaSave = () => { };
     handlerGeoDaTable = () => {
+      if (this.isMapLoaded()) {
         const dataId = this.props.demo.keplerGl[this.mapID].visState.layers[0].config.dataId;
         this.props.dispatch(wrapTo(this.mapID, showDatasetTable(dataId)));
+      }
     };
 
     render() {
         return (
+          <ThemeProvider theme={theme}>
             <div style={this.toolbarStyle}>
               <div style={this.innerStyle}>
                 <Grid container alignItems="center">
@@ -114,10 +139,11 @@ export default class GeoDaToolbar extends React.Component {
                 <GeoDaButton key="14" src="./img/clustering.png" tooltip="Clustering" enabled={false} handler={this.handlerGeoDaTable} />
                 <Divider key="-6" orientation="vertical" flexItem />
                 <GeoDaButton key="15" src="./img/moranscatter.png" tooltip="Moran Scatter" enabled={false} handler={this.handlerGeoDaTable} />
-                <GeoDaButton key="16" src="./img/sa.png" tooltip="Spatial Autocorrelation" enabled={false} handler={this.handlerGeoDaTable} />
+                <GeoDaSAButton key="16" src="./img/sa.png" tooltip="Spatial Autocorrelation" enabled={this.isMapLoaded()} {...this.props} />
                 </Grid>
               </div>
             </div>
+          </ThemeProvider>
         );
     }
 }

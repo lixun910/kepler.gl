@@ -248,6 +248,7 @@ const composedReducer = (state, action) => {
       action.result.map((result, index) => {
         const uid = result.info.label;
         state.geoda.fields[uid] = result.data.fields; // 0 means the top one
+        state.geoda.weights[uid] = {}; // empty weights
       });
       break;
 
