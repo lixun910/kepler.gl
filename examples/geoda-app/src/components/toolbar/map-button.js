@@ -54,7 +54,7 @@ export default class GeoDaMapButton extends DefaultButton {
     const nb = jsgeoda.custom_breaks(map_uid, selectedMethod, k, null, values);
     const colors = colorbrewer[colorName][k].map((hex)=>hexToRgb(hex));
 
-    const returnFillColor = (obj) => {
+    const returnFillColor = (obj, index) => {
       let x = obj.properties[varName];
       for (var i = 1; i < nb.breaks.length; ++i) {
         if (x < nb.breaks[i])
@@ -105,23 +105,23 @@ export default class GeoDaMapButton extends DefaultButton {
               />
               <Dialog onClose={this.handleClose} aria-labelledby="customized-dialog-title" open={this.state.open}>
                 <DialogTitle id="customized-dialog-title" onClose={this.handleClose}>
-                  <FormattedMessage id={'createThemeMap'} />
+                  <FormattedMessage id={'geoda.map.createThemeMap'} />
                 </DialogTitle>
                 <DialogContent dividers>
 
                 <VariableSelect
                   ref={(ref) => this._variableSelect = ref}
-                  fields={this.props.geoda.fields}
+                  fields={this.getFields()}
                   fieldType={['integer', 'real']} />
 
                 <MapTypeSelect ref={(ref) => this._mapTypeSelect = ref} />
                 </DialogContent>
                 <DialogActions>
                   <Button autoFocus onClick={this.createThemeMap} color="primary">
-                    <FormattedMessage id={'createMap'} />
+                    <FormattedMessage id={'geoda.map.createMap'} />
                   </Button>
                   <Button autoFocus onClick={this.handleClose} color="primary">
-                    <FormattedMessage id={'close'} />
+                    <FormattedMessage id={'geoda.close'} />
                   </Button>
                 </DialogActions>
               </Dialog>

@@ -40,7 +40,7 @@ function CustomMapControlFactory(...deps) {
     </StyledMapControlOverlay>
   );
 
-  return withState([], state => ({...state.demo.app}))(CustomMapControl);
+  return withState([], state => ({...state.demo.geoda}))(CustomMapControl);
 }
 
 export function replaceMapControl() {

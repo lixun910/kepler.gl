@@ -44,13 +44,9 @@ const CONFIG = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: join(__dirname, 'src'),
+        include: [join(__dirname, 'src')],
         exclude: [/node_modules/]
-      },
-      {
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader"],
-      },
+      }
     ]
   },
 
@@ -58,8 +54,20 @@ const CONFIG = {
     fs: 'empty'
   },
 
-  // Optional: Enables reading mapbox token from environment variable
-  plugins: [new webpack.EnvironmentPlugin(['MapboxAccessToken'])]
+  // to support browser history api and remove the '#' sign
+  devServer: {
+    historyApiFallback: true
+  },
+
+  // Optional: Enables reading mapbox and dropbox client token from environment variable
+  plugins: [
+    new webpack.EnvironmentPlugin([
+      'MapboxAccessToken',
+      'DropboxClientId',
+      'MapboxExportToken',
+      'CartoClientId'
+    ])
+  ]
 };
 
 // This line enables bundling against src in this repo rather than installed deck.gl module

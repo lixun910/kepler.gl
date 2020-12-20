@@ -182,8 +182,8 @@ export const loadRemoteResourceSuccess = (state, action) => {
 
   return {
     ...state,
-    app: {
-      ...state.app,
+    geoda: {
+      ...state.geoda,
       currentSample: action.options,
       isMapLoading: false // we turn off the spinner
     },
@@ -204,8 +204,8 @@ export const loadRemoteResourceError = (state, action) => {
 
   return {
     ...state,
-    app: {
-      ...state.app,
+    geoda: {
+      ...state.geoda,
       isMapLoading: false // we turn of the spinner
     },
     keplerGl: {

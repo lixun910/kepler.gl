@@ -111,6 +111,7 @@ export default class MapTypeSelect extends React.Component {
             onChange={this.categoryChange}
             variant="filled"
             helperText=""
+            InputProps={{ inputProps: {min: 1, max: 200} }}
             fullWidth
           />
         </Box>
