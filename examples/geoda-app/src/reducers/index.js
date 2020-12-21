@@ -38,6 +38,7 @@ import {AUTH_TOKENS, DEFAULT_FEATURE_FLAGS, GEODA_MAP_ID} from '../constants/def
 import {generateHashId} from '../utils/strings';
 
 import {loadJsgeoda} from '../actions';
+import jsgeoda from 'jsgeoda';
 
 // INITIAL_APP_STATE
 const initialAppState = {
@@ -180,18 +181,30 @@ export const loadRemoteResourceSuccess = (state, action) => {
     }
   );
 
-  return {
-    ...state,
-    geoda: {
-      ...state.geoda,
-      currentSample: action.options,
-      isMapLoading: false // we turn off the spinner
-    },
-    keplerGl: {
-      ...state.keplerGl, // in case you keep multiple instances
-      map: keplerGlInstance
-    }
-  };
+  // process for geoda
+  const uid = datasetId; // uid for this map layer
+  const ab = new TextEncoder().encode(JSON.stringify(action.response));
+  const fields = {};
+  fields[uid]  = datasets.data.fields;
+  const weights = {};
+  weights[uid] = {};
+
+  state.geoda.loaded = true; // enable geoda features
+  state.geoda.currentSample =  action.options;
+  state.geoda.isMapLoading = false; // we turn off the spinner
+  state.geoda.mapUIds = [uid];
+  state.geoda.currentMapUid = uid;
+  state.geoda.fields = fields;
+  state.geoda.weights = weights;
+  state.keplerGl.map =  keplerGlInstance; // in case you keep multiple instances
+
+  jsgeoda.New().then(geoda => {
+    state["geoda"]["jsgeoda"] = geoda;
+    geoda.ReadGeojsonMap(uid, ab);
+    return demoReducer(state, action);
+  });
+
+  return state;
 };
 
 export const loadRemoteResourceError = (state, action) => {

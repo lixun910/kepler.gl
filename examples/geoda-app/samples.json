@@ -1,0 +1,50 @@
+[
+  {
+    "id": "natregimes",
+    "label": "Homicides + Socio-Economics (1960-90)",
+    "queryType": "sample",
+    "imageUrl": "/img/natregimes.png",
+    "description": "Homicides + Socio-Economics (1960-90)",
+    "detail": " Homicides and selected socio-economic characteristics for continental U.S. counties. Data for four decennial census years: 1960, 1970, 1980 and 1990.",
+    "size": 3085,
+    "visible": true,
+    "dataUrl": "https://webgeoda.github.io/data/natregimes.geojson",
+    "configUrl": ""
+  },
+  {
+    "id": "sfcrime",
+    "label": "San Francisco Crime Incidents (2012)",
+    "queryType": "sample",
+    "imageUrl": "/img/sfcrime.png",
+    "description": "San Francisco Crime Incidents (2012)",
+    "detail": " Incidents of robberies, drugs/narcotics possession or sale, vehicle theft, and vandalism for July 1 to December 31, 2012",
+    "size": 579,
+    "visible": true,
+    "dataUrl": "https://webgeoda.github.io/data/sfcrime.geojson",
+    "configUrl": ""
+  },
+  {
+    "id": "guerry",
+    "label": "Moral statistics” in 1830s France",
+    "queryType": "sample",
+    "imageUrl": "/img/guerry.png",
+    "description": "Moral statistics” in 1830s France",
+    "detail": " Classic social science foundational study by Andre-Michel Guerry on crime, suicide, literacy and other “moral statistics” in 1830s France",
+    "size": 579,
+    "visible": true,
+    "dataUrl": "https://webgeoda.github.io/data/guerry.geojson",
+    "configUrl": ""
+  },
+  {
+    "id": "county_unemployment",
+    "label": "2017 Unemployment Rates for U.S. Counties",
+    "queryType": "sample",
+    "imageUrl": "https://s3.amazonaws.com/uber-static/kepler.gl/sample/counties-unemployment.png",
+    "description": "2017 Labor force information for U.S. Counties",
+    "detail": " This dataset contains 2017 labor force information from the [Bureau of Labor Statistics](https://www.bls.gov/lau/#tables) joined with county shapefiles from the [Census Bureau](https://www.census.gov/geo/maps-data/data/cbf/cbf_counties.html).",
+    "size": 3220,
+    "visible": true,
+    "dataUrl": "https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/county_unemployment/data.geojson",
+    "configUrl": "https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/county_unemployment/config.json"
+  }
+]

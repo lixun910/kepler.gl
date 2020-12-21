@@ -31,22 +31,22 @@ export function SimpleMenu(props) {
       >
         <MenuList>
           <MenuItem id="UNI_LOCAL_MORAN" onClick={handleClose}>Univariate Local Moran's I</MenuItem>
-          <MenuItem onClick={handleClose}>Univariate Median Local Moran's I</MenuItem>
+          <MenuItem disabled onClick={handleClose}>Univariate Median Local Moran's I</MenuItem>
           <Divider />
-          <MenuItem onClick={handleClose}>Local G</MenuItem>
-          <MenuItem onClick={handleClose}>Local G*</MenuItem>
+          <MenuItem disabled onClick={handleClose}>Local G</MenuItem>
+          <MenuItem disabled onClick={handleClose}>Local G*</MenuItem>
           <Divider />
-          <MenuItem onClick={handleClose}>Univariate Local Join Count</MenuItem>
-          <MenuItem onClick={handleClose}>Bivariate Local Join Count</MenuItem>
-          <MenuItem onClick={handleClose}>Co-location Local Join Count</MenuItem>
+          <MenuItem disabled onClick={handleClose}>Univariate Local Join Count</MenuItem>
+          <MenuItem disabled onClick={handleClose}>Bivariate Local Join Count</MenuItem>
+          <MenuItem disabled onClick={handleClose}>Co-location Local Join Count</MenuItem>
           <Divider />
-          <MenuItem onClick={handleClose}>Univariate Local Geary</MenuItem>
-          <MenuItem onClick={handleClose}>Multivariate Local Geary</MenuItem>
+          <MenuItem disabled onClick={handleClose}>Univariate Local Geary</MenuItem>
+          <MenuItem disabled onClick={handleClose}>Multivariate Local Geary</MenuItem>
           <Divider />
-          <MenuItem onClick={handleClose}>Univariate Quantile LISA</MenuItem>
-          <MenuItem onClick={handleClose}>Multivariate Quantile LISA</MenuItem>
+          <MenuItem disabled onClick={handleClose}>Univariate Quantile LISA</MenuItem>
+          <MenuItem disabled onClick={handleClose}>Multivariate Quantile LISA</MenuItem>
           <Divider />
-          <MenuItem onClick={handleClose}>Local Neighbor Match Test</MenuItem>
+          <MenuItem disabled onClick={handleClose}>Local Neighbor Match Test</MenuItem>
         </MenuList>
       </Popover>
     </div>

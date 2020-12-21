@@ -75,10 +75,11 @@ export default class GeoDaToolbar extends React.Component {
         position: 'absolute',
         top: '10px',
         left: '50%',
-        marginLeft : '-400px',
+        marginLeft : '-430px',
         zIndex: '100',
-        width: '800px',
+        width: '860px',
         height: '60px',
+        minWidth: '860px',
         padding: '10px 0px 0px 10px',
         backgroundColor: '#eee',
         backgroundImage: 'linear-gradient(#eee, #ccc)',
@@ -117,29 +118,31 @@ export default class GeoDaToolbar extends React.Component {
             <div style={this.toolbarStyle}>
               <div style={this.innerStyle}>
                 <Grid container alignItems="center">
-                <GeoDaButton key="0" src="./img/geoda.png" tooltip="GeoDa" enabled={true} handler={this.handlerGeoDaInfo} />
+                <GeoDaButton key="0" src="/img/geoda.png" tooltip="GeoDa" enabled={true} handler={this.handlerGeoDaInfo} />
                 <Divider key="-1" orientation="vertical" flexItem />
-                <GeoDaButton key="1" src="./img/open.png" tooltip="Open" enabled={true} handler={this.handlerGeoDaOpen} />
-                <GeoDaButton key="2" src="./img/close.png" tooltip="Close" enabled={false} handler={this.handlerGeoDaClose} />
-                <GeoDaButton key="3" src="./img/save.png" tooltip="Save" enabled={false} handler={this.handlerGeoDaSave} />
+                <GeoDaButton key="1" src="/img/open.png" tooltip="Open" enabled={true} handler={this.handlerGeoDaOpen} />
+                <GeoDaButton key="2" src="/img/close.png" tooltip="Close" enabled={false} handler={this.handlerGeoDaClose} />
+                <GeoDaButton key="3" src="/img/save.png" tooltip="Save" enabled={false} handler={this.handlerGeoDaSave} />
                 <Divider key="-2" orientation="vertical" flexItem />
-                <GeoDaButton key="4" src="./img/table.png" tooltip="Table" enabled={this.isMapLoaded()} handler={this.handlerGeoDaTable} />
-                <GeoDaWeightsButton key="5" src="./img/weights.png" tooltip="Weights" enabled={this.isMapLoaded()} {...this.props}  />
+                <GeoDaButton key="4" src="/img/table.png" tooltip="Table" enabled={this.isMapLoaded()} handler={this.handlerGeoDaTable} />
+                <GeoDaWeightsButton key="5" src="/img/weights.png" tooltip="Weights" enabled={this.isMapLoaded()} {...this.props}  />
                 <Divider key="-3" orientation="vertical" flexItem />
-                <GeoDaMapButton key="6" src="./img/classify.png" tooltip="Maps and Rates" enabled={this.isMapLoaded()} {...this.props} />
-                <GeoDaButton key="7" src="./img/cartogram.png" tooltip="Cartogram" enabled={false} handler={this.handlerGeoDaTable} />
-                <GeoDaButton key="8" src="./img/animation.png" tooltip="Animation" enabled={false} handler={this.handlerGeoDaTable} />
+                <GeoDaMapButton key="6" src="/img/classify.png" tooltip="Maps and Rates" enabled={this.isMapLoaded()} {...this.props} />
+                <GeoDaButton key="7" src="/img/cartogram.png" tooltip="Cartogram" enabled={false} handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="8" src="/img/animation.png" tooltip="Animation" enabled={false} handler={this.handlerGeoDaTable} />
                 <Divider key="-4" orientation="vertical" flexItem />
-                <GeoDaButton key="9" src="./img/histogram.png" tooltip="Histogram" enabled={false} handler={this.handlerGeoDaTable} />
-                <GeoDaButton key="10" src="./img/boxplot.png" tooltip="Box plot" enabled={false} handler={this.handlerGeoDaTable} />
-                <GeoDaButton key="11" src="./img/scatterplot.png" tooltip="Scatter" enabled={false} handler={this.handlerGeoDaTable} />
-                <GeoDaButton key="12" src="./img/scattermatrix.png" tooltip="Scatter Matrix" enabled={false} handler={this.handlerGeoDaTable} />
-                <GeoDaButton key="13" src="./img/pcp.png" tooltip="Parallel Coordinate" enabled={false} handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="9" src="/img/histogram.png" tooltip="Histogram" enabled={false} handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="10" src="/img/boxplot.png" tooltip="Box plot" enabled={false} handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="11" src="/img/scatterplot.png" tooltip="Scatter" enabled={false} handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="12" src="/img/scattermatrix.png" tooltip="Scatter Matrix" enabled={false} handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="13" src="/img/pcp.png" tooltip="Parallel Coordinate" enabled={false} handler={this.handlerGeoDaTable} />
                 <Divider key="-5" orientation="vertical" flexItem />
-                <GeoDaButton key="14" src="./img/clustering.png" tooltip="Clustering" enabled={false} handler={this.handlerGeoDaTable} />
+                <GeoDaButton key="14" src="/img/clustering.png" tooltip="Clustering" enabled={false} handler={this.handlerGeoDaTable} />
                 <Divider key="-6" orientation="vertical" flexItem />
-                <GeoDaButton key="15" src="./img/moranscatter.png" tooltip="Moran Scatter" enabled={false} handler={this.handlerGeoDaTable} />
-                <GeoDaSAButton key="16" src="./img/sa.png" tooltip="Spatial Autocorrelation" enabled={this.isMapLoaded()} {...this.props} />
+                <GeoDaButton key="15" src="/img/moranscatter.png" tooltip="Moran Scatter" enabled={false} handler={this.handlerGeoDaTable} />
+                <GeoDaSAButton key="16" src="/img/sa.png" tooltip="Spatial Autocorrelation" enabled={this.isMapLoaded()} {...this.props} />
+                <Divider key="-7" orientation="vertical" flexItem />
+                <GeoDaSAButton key="17" src="/img/regression.png" tooltip="Regression" enabled={false}  />
                 </Grid>
               </div>
             </div>

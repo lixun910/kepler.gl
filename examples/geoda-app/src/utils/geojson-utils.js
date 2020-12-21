@@ -9,7 +9,8 @@
 export function getDataByFieldName(rawData, fieldName){
   let values = [];
   for (const feat of rawData) {
-    values.push(feat.properties[fieldName]);
+    const v =  feat.properties[fieldName];
+    values.push(v? v: 0);
   }
   return values;
 }
