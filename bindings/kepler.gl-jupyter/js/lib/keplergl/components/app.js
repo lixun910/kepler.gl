@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -93,10 +93,7 @@ function App() {
   }, []);
 
   return (
-    <StyledContainer
-      ref={rootElm}
-      className="keplergl-widget-container"
-    >
+    <StyledContainer ref={rootElm} className="keplergl-widget-container">
       {Helmet ? (
         <Helmet>
           <meta charSet="utf-8" />

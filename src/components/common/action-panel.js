@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,8 +34,9 @@ const StyledItem = styled.div`
   min-height: ${props => props.theme.actionPanelHeight}px;
   text-transform: capitalize;
   background-color: ${props => props.theme.dropdownListBgd};
-  width: ${props => props.theme.actionPanelWidth}px;
+  max-width: 200px;
   position: relative;
+
   ${props => (props.color ? `border-left: 3px solid rgb(${props.color});` : '')} :hover {
     cursor: pointer;
     color: ${props => props.theme.textColorHl};
@@ -46,6 +47,8 @@ const StyledItem = styled.div`
 
   .label {
     margin-left: 8px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .label-icon {
@@ -53,13 +56,19 @@ const StyledItem = styled.div`
   }
 
   .nested-group {
-    width: 110px;
+    max-width: 200px;
+    overflow: hidden;
     display: none;
     color: ${props => props.theme.textColor};
     position: absolute;
-    left: 110px;
+    left: 100%;
     top: 0px;
     padding-left: 4px;
+
+    label {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
 `;
 
@@ -93,13 +102,14 @@ const renderChildren = (child, index) =>
     className: classnames('action-panel-item', child.props.className)
   });
 
+/** @type {typeof import('./action-panel').ActionPanelItem} */
 export const ActionPanelItem = React.memo(
   ({children, color, className, Icon, label, onClick, isSelection, isActive, style}) => {
     const onClickCallback = useCallback(
       event => {
         event.preventDefault();
         event.stopPropagation();
-        onClick();
+        onClick?.();
       },
       [onClick]
     );
@@ -122,7 +132,7 @@ export const ActionPanelItem = React.memo(
         ) : (
           <span className="label">{label}</span>
         )}
-        {children && children.length ? (
+        {children ? (
           <div>
             <div className="label-icon">
               <ArrowRight height="16px" />
@@ -155,6 +165,7 @@ const StyledActionPanel = styled.div`
 `;
 
 // React compound element https://medium.com/@Dane_s/react-js-compound-components-a6e54b5c9992
+/** @type {typeof import('./action-panel').ActionPanel} */
 const ActionPanel = ({children, className, direction = 'column'}) => (
   <StyledActionPanel className={className} direction={direction}>
     {React.Children.map(children, renderChildren)}

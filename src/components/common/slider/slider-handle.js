@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,9 @@ import classnames from 'classnames';
 import styled from 'styled-components';
 import MouseEventHandler from './mouse-event';
 
-const StyledSliderHandle = styled.span`
+const StyledSliderHandle = styled.span.attrs({
+  className: 'kg-range-slider__handle'
+})`
   position: absolute;
   z-index: 10;
   ${props => (props.vertical ? 'margin-left' : 'margin-top')}: -${props =>
@@ -162,7 +164,7 @@ export default class SliderHandle extends Component {
           />
         ) : null}
         <StyledSliderHandle
-          className={classnames('kg-range-slider__handle', {
+          className={classnames({
             'kg-range-slider__handle--active': this.state.mouseOver
           })}
           ref={this.ref}

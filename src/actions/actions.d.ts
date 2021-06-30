@@ -30,8 +30,8 @@ import {UiState} from 'reducers/ui-state-updaters';
  */
 export type ProtoDataset = {
   info: {
-    id: string;
-    label: string;
+    id?: string;
+    label?: string;
     format?: string;
     color?: RGBColor;
   };

@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,11 @@
  *
  * @param {Object} updateTriggers {getPosition: {column}, getData: {filteredIndex}}
  * @param {Object} oldUpdateTriggers
- * @returns {Boolean|Object} `false` if nothing changed, or `triggerChanged` as an object
+ * @returns {boolean|object} `false` if nothing changed, or `triggerChanged` as an object
  */
 export function diffUpdateTriggers(updateTriggers, oldUpdateTriggers = {}) {
   const triggerChanged = {};
+  /** @type {boolean|object} */
   let reason = false;
 
   for (const triggerName in updateTriggers) {

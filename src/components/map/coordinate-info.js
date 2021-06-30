@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ const DECIMAL_Z = 1;
 
 const CoordinateInfoFactory = () => {
   const CoordinateInfo = ({coordinate, zoom}) => (
-    <div>
+    <div className="coordingate-hover-info">
       <StyledLayerName className="map-popover__layer-name">
         <CursorClick height="12px" />
         Coordinate

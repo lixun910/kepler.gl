@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -106,6 +106,7 @@ const StyledContainer = styled.div`
   }
 `;
 
+/** @type {import('./geocoder').GeocoderComponent} */
 const GeoCoder = ({
   mapboxApiAccessToken,
   className = '',
@@ -120,10 +121,12 @@ const GeoCoder = ({
   width,
   intl
 }) => {
-  const [inputValue, setInputValue] = useState(null);
+  const [inputValue, setInputValue] = useState('');
   const [showResults, setShowResults] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
-  const [results, setResults] = useState([]);
+  /** @type {import('./geocoder').Results} */
+  const initialResults = [];
+  const [results, setResults] = useState(initialResults);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const client = useMemo(() => new MapboxClient(mapboxApiAccessToken), [mapboxApiAccessToken]);

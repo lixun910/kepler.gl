@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -204,6 +204,7 @@ export default function SidePanelFactory(
         showDatasetTable: this._showDatasetTable,
         showAddDataModal: this._showAddDataModal,
         removeLayer: visStateActions.removeLayer,
+        duplicateLayer: visStateActions.duplicateLayer,
         removeDataset: this._removeDataset,
         openModal: uiStateActions.toggleModal
       };

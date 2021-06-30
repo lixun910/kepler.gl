@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,9 +20,9 @@
 
 import test from 'tape';
 import cloneDeep from 'lodash.clonedeep';
-
 import {findDefaultLayer, getLayerHoverProp} from 'utils/layer-utils';
-import {findPointFieldPairs, createNewDataEntry} from 'utils/dataset-utils';
+import {createNewDataEntry} from 'utils/dataset-utils';
+import KeplerTable, {findPointFieldPairs} from 'utils/table-utils/kepler-table';
 import {processCsvData, processGeojson} from 'processors/data-processor';
 import {GEOJSON_FIELDS} from 'constants/default-settings';
 import {LayerClasses, KeplerGlLayers} from 'layers';
@@ -235,6 +235,16 @@ test('layerUtils -> findDefaultLayer.1', t => {
         lng1: {
           value: 'two_two.lng',
           fieldIdx: 2
+        },
+        alt0: {
+          value: null,
+          fieldIdx: -1,
+          optional: true
+        },
+        alt1: {
+          value: null,
+          fieldIdx: -1,
+          optional: true
         }
       }
     })
@@ -259,30 +269,32 @@ test('layerUtils -> findDefaultLayer.2', t => {
     }
   ];
   const dataId = 'milkshake';
-  const fieldPairs = findPointFieldPairs(inputFields);
 
-  const dataset = {
-    id: dataId,
-    fields: inputFields,
-    fieldPairs,
-    label: 'sf_zip_geo',
-    allData: [
-      [
-        {
-          type: 'Feature',
-          properties: {index: 0},
-          geometry: {type: 'Point', coordinates: []}
-        }
+  const dataset = new KeplerTable({
+    info: {
+      id: dataId,
+      label: 'sf_zip_geo'
+    },
+    data: {
+      rows: [
+        [
+          {
+            type: 'Feature',
+            properties: {index: 0},
+            geometry: {type: 'Point', coordinates: []}
+          }
+        ],
+        [
+          {
+            type: 'Feature',
+            properties: {index: 1},
+            geometry: {type: 'Point', coordinates: []}
+          }
+        ]
       ],
-      [
-        {
-          type: 'Feature',
-          properties: {index: 1},
-          geometry: {type: 'Point', coordinates: []}
-        }
-      ]
-    ]
-  };
+      fields: inputFields
+    }
+  });
 
   const expected = new GeojsonLayer({
     label: 'sf_zip_geo',
@@ -462,6 +474,16 @@ test('layerUtils -> findDefaultLayer.4', t => {
         lng1: {
           value: 'dropoff_lng',
           fieldIdx: 3
+        },
+        alt0: {
+          value: null,
+          fieldIdx: -1,
+          optional: true
+        },
+        alt1: {
+          value: null,
+          fieldIdx: -1,
+          optional: true
         }
       }
     })
@@ -498,32 +520,50 @@ test('layerUtils -> findDefaultLayer.5', t => {
 });
 
 test('layerUtils -> findDefaultLayer:GeojsonLayer', t => {
-  const fields = [
-    {
-      name: 'random',
-      tableFieldIndex: 1
+  const dataset = new KeplerTable({
+    info: {
+      label: 'sf_zip_geo'
     },
-    {
-      name: 'begintrip_lng',
-      tableFieldIndex: 2
-    },
-    {
-      name: 'cool',
-      tableFieldIndex: 3
-    },
-    {
-      name: 'dropoff_lng',
-      tableFieldIndex: 4
-    },
-    {
-      name: GEOJSON_FIELDS.geojson[0],
-      tableFieldIndex: 5
-    },
-    {
-      name: GEOJSON_FIELDS.geojson[1],
-      tableFieldIndex: 6
+    data: {
+      rows: [
+        [
+          {
+            type: 'Feature',
+            properties: {index: 0},
+            geometry: {type: 'Point', coordinates: []}
+          }
+        ],
+        [
+          {
+            type: 'Feature',
+            properties: {index: 1},
+            geometry: {type: 'Point', coordinates: []}
+          }
+        ]
+      ],
+      fields: [
+        {
+          name: 'random'
+        },
+        {
+          name: 'begintrip_lng'
+        },
+        {
+          name: 'cool'
+        },
+        {
+          name: 'dropoff_lng'
+        },
+        {
+          name: GEOJSON_FIELDS.geojson[0]
+        },
+        {
+          name: GEOJSON_FIELDS.geojson[1]
+        }
+      ]
     }
-  ];
+  });
+
   const expected1 = new GeojsonLayer({
     label: 'what',
     dataId: 'smoothie',
@@ -532,6 +572,7 @@ test('layerUtils -> findDefaultLayer:GeojsonLayer', t => {
       geojson: {value: GEOJSON_FIELDS.geojson[0], fieldIdx: 4}
     }
   });
+
   const expected2 = new GeojsonLayer({
     label: 'what',
     dataId: 'smoothie',
@@ -549,6 +590,8 @@ test('layerUtils -> findDefaultLayer:GeojsonLayer', t => {
     stroked: true,
     strokeColor: layer2Stroke
   });
+
+  const {fields} = dataset;
 
   const geojsonLayers = findDefaultLayer(
     {

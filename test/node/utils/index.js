@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,7 @@
 
 import './data-utils-test';
 import './data-processor-test';
+import './kepler-table-test';
 import './filter-utils-test';
 import './gpu-filter-utils-test';
 import './layer-utils-test';
@@ -32,4 +33,3 @@ import './color-util-test';
 import './util-test';
 import './export-utils-test';
 import './s2-utils-test';
-import './map-info-utils-test';

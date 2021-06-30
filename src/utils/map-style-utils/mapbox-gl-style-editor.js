@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -191,10 +191,10 @@ export function scaleMapStyleByResolution(mapboxStyle, scale) {
  * @return {Object} mergedLayerGroups
  */
 export function mergeLayerGroupVisibility(defaultLayerGroup, currentLayerGroup) {
-  return Object.keys(currentLayerGroup).reduce(
+  return Object.keys(defaultLayerGroup).reduce(
     (accu, key) => ({
       ...accu,
-      ...(defaultLayerGroup.hasOwnProperty(key) ? {[key]: currentLayerGroup[key]} : {})
+      ...(currentLayerGroup.hasOwnProperty(key) ? {[key]: currentLayerGroup[key]} : {})
     }),
     defaultLayerGroup
   );

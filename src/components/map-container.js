@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ import MapboxGLMap from 'react-map-gl';
 import DeckGL from '@deck.gl/react';
 import {createSelector} from 'reselect';
 import WebMercatorViewport from 'viewport-mercator-project';
+import {errorNotification} from 'utils/notifications-utils';
 
 // components
 import MapPopoverFactory from 'components/map/map-popover';
@@ -35,15 +36,20 @@ import EditorFactory from './editor/editor';
 
 // utils
 import {generateMapboxLayers, updateMapboxLayers} from 'layers/mapbox-utils';
-import {OVERLAY_TYPE} from 'layers/base-layer';
 import {setLayerBlending} from 'utils/gl-utils';
 import {transformRequest} from 'utils/map-style-utils/mapbox-utils';
 import {getLayerHoverProp, renderDeckGlLayer} from 'utils/layer-utils';
 
 // default-settings
 import ThreeDBuildingLayer from 'deckgl-layers/3d-building-layer/3d-building-layer';
-import {FILTER_TYPES, GEOCODER_LAYER_ID} from 'constants/default-settings';
+import {
+  FILTER_TYPES,
+  GEOCODER_LAYER_ID,
+  THROTTLE_NOTIFICATION_TIME
+} from 'constants/default-settings';
+import {OVERLAY_TYPE} from 'layers/base-layer';
 
+/** @type {{[key: string]: React.CSSProperties}} */
 const MAP_STYLE = {
   container: {
     display: 'inline-block',
@@ -104,7 +110,6 @@ export default function MapContainerFactory(MapPopover, MapControl, Editor) {
       filters: PropTypes.arrayOf(PropTypes.any).isRequired,
       mapState: PropTypes.object.isRequired,
       mapControls: PropTypes.object.isRequired,
-      uiState: PropTypes.object.isRequired,
       mapStyle: PropTypes.object.isRequired,
       mousePos: PropTypes.object.isRequired,
       mapboxApiAccessToken: PropTypes.string.isRequired,
@@ -251,6 +256,28 @@ export default function MapContainerFactory(MapPopover, MapControl, Editor) {
       setLayerBlending(gl, this.props.layerBlending);
     };
 
+    _onDeckError = (error, layer) => {
+      const errorMessage = `An error in deck.gl: ${error.message} in ${layer.id}`;
+      const notificationId = `${layer.id}-${error.message}`;
+
+      // Throttle error notifications, as React doesn't like too many state changes from here.
+      this._deckGLErrorsElapsed = this._deckGLErrorsElapsed || {};
+      const lastShown = this._deckGLErrorsElapsed[notificationId];
+      if (!lastShown || lastShown < Date.now() - THROTTLE_NOTIFICATION_TIME) {
+        this._deckGLErrorsElapsed[notificationId] = Date.now();
+
+        // Create new error notification or update existing one with same id.
+        // Update is required to preserve the order of notifications as they probably are going to "jump" based on order of errors.
+        const {uiStateActions} = this.props;
+        uiStateActions.addNotification(
+          errorNotification({
+            message: errorMessage,
+            id: notificationId
+          })
+        );
+      }
+    };
+
     /* component render functions */
 
     /* eslint-disable complexity */
@@ -357,11 +384,13 @@ export default function MapContainerFactory(MapPopover, MapControl, Editor) {
         mapboxApiUrl
       } = this.props;
 
-      let deckGlLayers = [];
+      // initialise layers from props if exists
+      let deckGlLayers = this.props.deckGlProps?.layers || [];
+
       // wait until data is ready before render data layers
       if (layerData && layerData.length) {
         // last layer render first
-        deckGlLayers = layerOrder
+        const dataLayers = layerOrder
           .slice()
           .reverse()
           .filter(
@@ -374,6 +403,7 @@ export default function MapContainerFactory(MapPopover, MapControl, Editor) {
             const layerOverlay = renderDeckGlLayer(this.props, layerCallbacks, idx);
             return overlays.concat(layerOverlay || []);
           }, []);
+        deckGlLayers = deckGlLayers.concat(dataLayers);
       }
 
       if (mapStyle.visibleLayerGroups['3d building']) {
@@ -399,6 +429,7 @@ export default function MapContainerFactory(MapPopover, MapControl, Editor) {
           onBeforeRender={this._onBeforeRender}
           onHover={visStateActions.onLayerHover}
           onClick={visStateActions.onLayerClick}
+          onError={this._onDeckError}
           ref={comp => {
             if (comp && comp.deck && !this._deck) {
               this._deck = comp.deck;
@@ -451,12 +482,13 @@ export default function MapContainerFactory(MapPopover, MapControl, Editor) {
         mapboxApiAccessToken,
         mapboxApiUrl,
         mapControls,
-        uiState,
+        locale,
         uiStateActions,
         visStateActions,
         interactionConfig,
         editor,
-        index
+        index,
+        isExport
       } = this.props;
 
       const layersToRender = this.layersToRenderSelector(this.props);
@@ -475,7 +507,8 @@ export default function MapContainerFactory(MapPopover, MapControl, Editor) {
         transformRequest
       };
 
-      const isEdit = uiState.mapControls.mapDraw.active;
+      const isEdit = (mapControls.mapDraw || {}).active;
+
       const hasGeocoderLayer = layers.find(l => l.id === GEOCODER_LAYER_ID);
 
       return (
@@ -484,7 +517,7 @@ export default function MapContainerFactory(MapPopover, MapControl, Editor) {
             datasets={datasets}
             dragRotate={mapState.dragRotate}
             isSplit={Boolean(mapLayers)}
-            isExport={this.props.isExport}
+            isExport={isExport}
             layers={layers}
             layersToRender={layersToRender}
             mapIndex={index}
@@ -493,7 +526,7 @@ export default function MapContainerFactory(MapPopover, MapControl, Editor) {
             scale={mapState.scale || 1}
             top={interactionConfig.geocoder && interactionConfig.geocoder.enabled ? 52 : 0}
             editor={editor}
-            locale={uiState.locale}
+            locale={locale}
             onTogglePerspective={mapStateActions.togglePerspective}
             onToggleSplitMap={mapStateActions.toggleSplitMap}
             onMapToggleLayer={this._handleMapToggleLayer}
@@ -512,7 +545,7 @@ export default function MapContainerFactory(MapPopover, MapControl, Editor) {
             onMouseMove={this.props.visStateActions.onMouseMove}
           >
             {this._renderDeckOverlay(layersToRender)}
-            {this._renderMapboxOverlays(layersToRender)}
+            {this._renderMapboxOverlays()}
             <Editor
               index={index}
               datasets={datasets}

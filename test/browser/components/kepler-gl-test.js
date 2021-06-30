@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,8 @@ import {Provider} from 'react-redux';
 
 import coreReducer from 'reducers/core';
 import {keplerGlInit} from 'actions/actions';
-import {appInjector} from 'components/container';
 import {
+  appInjector,
   KeplerGlFactory,
   SidePanelFactory,
   MapContainerFactory,
@@ -152,7 +152,6 @@ test('Components -> KeplerGl -> Mount -> Plot', t => {
       }
     }
   };
-
   const store = mockStore(initialStatePlots);
   let wrapper;
 

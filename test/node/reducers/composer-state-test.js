@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -273,6 +273,7 @@ test('#composerStateReducer - addDataToMapUpdater: keepExistingConfig', t => {
     [sampleConfig.dataId, hexDataId],
     'should save 2 datasets to state'
   );
+
   t.equal(
     actualVisState.datasets[sampleConfig.dataId],
     oldDatasets[sampleConfig.dataId],
@@ -285,12 +286,14 @@ test('#composerStateReducer - addDataToMapUpdater: keepExistingConfig', t => {
     actualVisState.datasets[hexDataId],
     'should merge and filter hexdata'
   );
+
   cmpInteraction(t, expectedVisState.interactionConfig, actualVisState.interactionConfig);
   t.deepEqual(
     expectedVisState.layerOrder,
     actualVisState.layerOrder,
     'Should create new layer, move it to the top'
   );
+
   t.deepEqual(
     expectedVisState.splitMaps,
     actualVisState.splitMaps,

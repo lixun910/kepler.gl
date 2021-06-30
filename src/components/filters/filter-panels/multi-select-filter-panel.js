@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ import FieldPanelWithFieldSelectFactory from 'components/filters/filter-panels/f
 MultiSelectFilterPanelFactory.deps = [FieldPanelWithFieldSelectFactory, MultiSelectFilterFactory];
 
 function MultiSelectFilterPanelFactory(FieldPanelWithFieldSelect, MultiSelectFilter) {
+  /** @type {import('./filter-panel-types').FilterPanelComponent} */
   const MultiSelectFilterPanel = React.memo(
     ({
       idx,

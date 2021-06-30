@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ import {default as S2GeometryLayer} from './s2-geometry-layer/s2-geometry-layer'
 import {LAYER_TYPES} from './types';
 
 // base layer
-export {default as Layer} from './base-layer';
+export {default as Layer, OVERLAY_TYPE, colorMaker} from './base-layer';
 
 // individual layers
 export const KeplerGlLayers = {

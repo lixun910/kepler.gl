@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -38,6 +38,7 @@ function FieldPanelWithFieldSelectFactory(
   FieldSelector,
   PanelHeaderAction
 ) {
+  /** @type {import('./filter-panel-types').FilterPanelComponent} */
   const FilterPanelWithFieldSelect = React.memo(
     ({
       allAvailableFields,
@@ -60,7 +61,7 @@ function FieldPanelWithFieldSelectFactory(
       ]);
 
       const fieldValue = useMemo(
-        () => (Array.isArray(filter.name) ? filter.name[0] : filter.name),
+        () => ((Array.isArray(filter.name) ? filter.name[0] : filter.name)),
         [filter.name]
       );
 

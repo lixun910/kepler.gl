@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ export const getValueAggrFunc = (field, aggregation) => {
   return points => {
     return field
       ? aggregate(
-          points.map(p => p.data[field.tableFieldIndex - 1]),
+          points.map(p => field.valueAccessor(p.data)),
           aggregation
         )
       : points.length;
@@ -80,7 +80,8 @@ export default class AggregationLayer extends Layer {
       'percentile',
       'coverage',
       'elevationPercentile',
-      'elevationScale'
+      'elevationScale',
+      'enableElevationZoomFactor'
     ];
   }
 
@@ -120,10 +121,11 @@ export default class AggregationLayer extends Layer {
   getVisualChannelDescription(key) {
     // e.g. label: Color, measure: Average of ETA
     const {range, field, defaultMeasure, aggregation} = this.visualChannels[key];
+    const fieldConfig = this.config[field];
     return {
       label: this.visConfigSettings[range].label,
-      measure: this.config[field]
-        ? `${this.config.visConfig[aggregation]} of ${this.config[field].displayName}`
+      measure: fieldConfig
+        ? `${this.config.visConfig[aggregation]} of ${fieldConfig.displayName || fieldConfig.name}`
         : defaultMeasure
     };
   }

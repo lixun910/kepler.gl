@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -496,6 +496,14 @@ const input = css`
   opacity: ${props => (props.disabled ? 0.5 : 1)};
   box-shadow: ${props => props.theme.inputBoxShadow};
 
+  :hover {
+    cursor: ${props => (props.type === 'number' || props.type === 'text' ? 'text' : 'pointer')};
+    background-color: ${props =>
+      props.active ? props.theme.inputBgdActive : props.theme.inputBgdHover};
+    border-color: ${props =>
+      props.active ? props.theme.inputBorderActiveColor : props.theme.inputBorderHoverColor};
+  }
+
   :active,
   :focus,
   &.focus,
@@ -503,14 +511,6 @@ const input = css`
     background-color: ${props => props.theme.inputBgdActive};
     border-color: ${props => props.theme.inputBorderActiveColor};
     box-shadow: ${props => props.theme.inputBoxShadowActive};
-  }
-
-  :hover {
-    cursor: ${props => (props.type === 'number' || props.type === 'text' ? 'text' : 'pointer')};
-    background-color: ${props =>
-      props.active ? props.theme.inputBgdActive : props.theme.inputBgdHover};
-    border-color: ${props =>
-      props.active ? props.theme.inputBorderActiveColor : props.theme.inputBorderHoverColor};
   }
 `;
 

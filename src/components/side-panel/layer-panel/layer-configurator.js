@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -370,18 +370,28 @@ export default function LayerConfiguratorFactory(
               <VisConfigSlider
                 {...layer.visConfigSettings.elevationScale}
                 {...visConfiguratorProps}
+                label="layerVisConfigs.heightMultiplier"
               />
               <ConfigGroupCollapsibleContent>
-                <AggrScaleSelector
-                  {...layerConfiguratorProps}
-                  channel={layer.visualChannels.size}
-                />
-                <VisConfigSlider {...layer.visConfigSettings.sizeRange} {...visConfiguratorProps} />
                 <ChannelByValueSelector
                   {...layerChannelConfigProps}
                   channel={layer.visualChannels.size}
                   description={elevationByDescription}
                   disabled={!enable3d}
+                />
+                <AggrScaleSelector
+                  {...layerConfiguratorProps}
+                  channel={layer.visualChannels.size}
+                />
+                <VisConfigSlider
+                  {...layer.visConfigSettings.sizeRange}
+                  {...visConfiguratorProps}
+                  label="layerVisConfigs.heightRange"
+                />
+                <VisConfigSwitch
+                  {...layer.visConfigSettings.enableElevationZoomFactor}
+                  {...visConfiguratorProps}
+                  label="layerVisConfigs.enableHeightZoomFactor"
                 />
                 {layer.visConfigSettings.sizeAggregation.condition(layer.config) ? (
                   <AggregationTypeSelector
@@ -471,6 +481,10 @@ export default function LayerConfiguratorFactory(
                 {...visConfiguratorProps}
                 label="layerVisConfigs.heightRange"
               />
+              <VisConfigSwitch
+                {...layer.visConfigSettings.enableElevationZoomFactor}
+                {...visConfiguratorProps}
+              />
             </ConfigGroupCollapsibleContent>
           </LayerConfigGroup>
         </StyledLayerVisualConfigurator>
@@ -503,7 +517,7 @@ export default function LayerConfiguratorFactory(
             )}
             <ConfigGroupCollapsibleContent>
               <ChannelByValueSelector
-                channel={layer.visualChannels.color}
+                channel={layer.visualChannels.sourceColor}
                 {...layerChannelConfigProps}
               />
               <VisConfigSlider {...layer.visConfigSettings.opacity} {...visConfiguratorProps} />
@@ -533,6 +547,16 @@ export default function LayerConfiguratorFactory(
               />
             </ConfigGroupCollapsibleContent>
           </LayerConfigGroup>
+
+          {/* elevation scale */}
+          {layer.visConfigSettings.elevationScale ? (
+            <LayerConfigGroup label="layerVisConfigs.elevationScale" collapsible>
+              <VisConfigSlider
+                {...layer.visConfigSettings.elevationScale}
+                {...visConfiguratorProps}
+              />
+            </LayerConfigGroup>
+          ) : null}
         </StyledLayerVisualConfigurator>
       );
     }
@@ -716,6 +740,10 @@ export default function LayerConfiguratorFactory(
                   channel={layer.visualChannels.height}
                   {...layerChannelConfigProps}
                 />
+                <VisConfigSwitch
+                  {...layer.visConfigSettings.enableElevationZoomFactor}
+                  {...visConfiguratorProps}
+                />
                 <VisConfigSwitch {...visConfiguratorProps} {...layer.visConfigSettings.wireframe} />
               </ConfigGroupCollapsibleContent>
             </LayerConfigGroup>
@@ -894,6 +922,10 @@ export default function LayerConfiguratorFactory(
                 {...visConfiguratorProps}
                 label="layerVisConfigs.heightRange"
               />
+              <VisConfigSwitch
+                {...layer.visConfigSettings.enableElevationZoomFactor}
+                {...visConfiguratorProps}
+              />
               <VisConfigSwitch {...visConfiguratorProps} {...layer.visConfigSettings.wireframe} />
             </ConfigGroupCollapsibleContent>
           </LayerConfigGroup>
@@ -903,7 +935,9 @@ export default function LayerConfiguratorFactory(
 
     render() {
       const {layer, datasets, updateLayerConfig, layerTypeOptions, updateLayerType} = this.props;
-      const {fields = [], fieldPairs} = layer.config.dataId ? datasets[layer.config.dataId] : {};
+      const {fields = [], fieldPairs = undefined} = layer.config.dataId
+        ? datasets[layer.config.dataId]
+        : {};
       const {config} = layer;
 
       const visConfiguratorProps = getVisConfiguratorProps(this.props);

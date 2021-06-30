@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@ import {ScatterplotLayer} from '@deck.gl/layers';
 
 import Layer from '../base-layer';
 import {hexToRgb} from 'utils/color-utils';
+import {findDefaultColorField} from 'utils/dataset-utils';
 import PointLayerIcon from './point-layer-icon';
 import {DEFAULT_LAYER_COLOR, CHANNEL_SCALES} from 'constants/default-settings';
 
@@ -126,12 +127,24 @@ export default class PointLayer extends Layer {
     };
   }
 
+  setInitialLayerConfig(dataset) {
+    const defaultColorField = findDefaultColorField(dataset);
+
+    if (defaultColorField) {
+      this.updateLayerConfig({
+        colorField: defaultColorField
+      });
+      this.updateLayerVisualChannel(dataset, 'color');
+    }
+
+    return this;
+  }
+
   static findDefaultLayerProps({fieldPairs = []}) {
     const props = [];
 
     // Make layer for each pair
     fieldPairs.forEach(pair => {
-      // find fields for tableFieldIndex
       const latField = pair.pair.lat;
       const lngField = pair.pair.lng;
       const layerName = pair.defaultName;
@@ -258,6 +271,7 @@ export default class PointLayer extends Layer {
       filterRange: defaultLayerProps.filterRange,
       ...brushingProps
     };
+    const hoveredObject = this.hasHoveredObject(objectHovered);
 
     return [
       new ScatterplotLayer({
@@ -267,19 +281,19 @@ export default class PointLayer extends Layer {
         ...data,
         parameters: {
           // circles will be flat on the map when the altitude column is not used
-          depthTest: this.config.columns.altitude.fieldIdx > -1
+          depthTest: this.config.columns.altitude?.fieldIdx > -1
         },
         lineWidthUnits: 'pixels',
         updateTriggers,
         extensions
       }),
       // hover layer
-      ...(this.isLayerHovered(objectHovered)
+      ...(hoveredObject
         ? [
             new ScatterplotLayer({
               ...this.getDefaultHoverLayerProps(),
               ...layerProps,
-              data: [objectHovered.object],
+              data: [hoveredObject],
               getLineColor: this.config.highlightColor,
               getFillColor: this.config.highlightColor,
               getRadius: data.getRadius,

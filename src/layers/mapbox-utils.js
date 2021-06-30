@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,9 @@
 // THE SOFTWARE.
 
 import {OVERLAY_TYPE} from './base-layer';
+
+/** @typedef {import("geojson").FeatureCollection} FeatureCollection */
+/** @typedef {import("geojson").Feature} Feature */
 
 /**
  * This function will convert layers to mapbox layers
@@ -128,14 +131,11 @@ function updateSourceData(map, sourceId, data) {
 }
 /**
  *
- * @param points
- * @param columns {
- * lat: {fieldIdx},
- * lng: {fieldIdx},
- * alt: {fieldIdx}
- * }
- * @param properties [{label: {fieldIdx}]
- * @returns {{type: string, properties: {}, features: {type: string, properties: {}, geometry: {type: string, coordinates: *[]}}[]}}
+ * @param allData
+ * @param filteredIndex
+ * @param getGeometry {(point: any) => any}
+ * @param getProperties {(point: any, index: number) => any}
+ * @returns FeatureCollection
  */
 export function geoJsonFromData(
   allData = [],
@@ -145,6 +145,7 @@ export function geoJsonFromData(
 ) {
   const geojson = {
     type: 'FeatureCollection',
+    /** @type {Feature[]} */
     features: []
   };
 

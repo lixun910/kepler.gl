@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@ import styled, {withTheme} from 'styled-components';
 import RangeBrushFactory from './range-brush';
 import HistogramPlotFactory from './histogram-plot';
 import LineChartFactory from './line-chart';
+import {isTest} from 'utils/utils';
 
 const StyledRangePlot = styled.div`
   margin-bottom: ${props => props.theme.sliderBarHeight}px;
@@ -72,7 +73,8 @@ export default function RangePlotFactory(RangeBrush, HistogramPlot, LineChart) {
       setEnableChartHover(true);
     }, [setEnableChartHover]);
 
-    const brushComponent = (
+    // JsDom have limited support for SVG, d3 will fail
+    const brushComponent = isTest() ? null : (
       <RangeBrush
         onBrush={onBrush}
         onBrushStart={onBrushStart}

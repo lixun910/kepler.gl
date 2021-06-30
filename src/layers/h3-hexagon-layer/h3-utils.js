@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ export function getCentroid({id}) {
   return h3ToGeo(id).reverse();
 }
 
-export function idToPolygonGeo({object}, properties) {
+export function idToPolygonGeo(object, properties) {
   if (!object || !object.id) {
     return null;
   }
@@ -53,7 +53,7 @@ export function idToPolygonGeo({object}, properties) {
 }
 
 export const isHexField = (field, fieldIdx, allData) => {
-  if (!field.type === ALL_FIELD_TYPES.string) {
+  if (field.type !== ALL_FIELD_TYPES.string) {
     return false;
   }
   const firstDP = allData.find(d => notNullorUndefined(d[fieldIdx]));

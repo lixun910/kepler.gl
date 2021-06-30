@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,7 @@ export {default as Checkmark} from './checkmark';
 export {default as Clipboard} from './clipboard';
 export {default as Clock} from './clock';
 export {default as Close} from './close';
+export {default as Copy} from './copy';
 export {default as Crosshairs} from './crosshairs';
 export {default as Cube3d} from './cube-3d';
 export {default as CursorClick} from './cursor-click';

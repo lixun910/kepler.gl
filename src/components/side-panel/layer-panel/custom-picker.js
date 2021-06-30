@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -69,6 +69,7 @@ class CustomPicker extends Component {
 
   render() {
     const {color, onChange} = this.props;
+    /** @type {any} - TS complains this doesn't match SketchPickerStylesProps */
     const pickerStyle = this.pickerStyleSelector(this.props);
     return (
       <StyledPicker>

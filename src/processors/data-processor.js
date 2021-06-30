@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,7 @@ const IGNORE_DATA_TYPES = Object.keys(AnalyzerDATA_TYPES).filter(
 export const PARSE_FIELD_VALUE_FROM_STRING = {
   [ALL_FIELD_TYPES.boolean]: {
     valid: d => typeof d === 'boolean',
-    parse: d => d === 'true' || d === 'True' || d === '1'
+    parse: d => d === 'true' || d === 'True' || d === 'TRUE' || d === '1'
   },
   [ALL_FIELD_TYPES.integer]: {
     valid: d => parseInt(d, 10) === d,
@@ -180,7 +180,10 @@ export function getSampleForTypeAnalyze({fields, allData, sampleCount = 50}) {
         sample[j][field] = null;
         j++;
       } else if (notNullorUndefined(allData[i][fieldIdx])) {
-        sample[j][field] = allData[i][fieldIdx];
+        sample[j][field] =
+          typeof allData[i][fieldIdx] === 'string'
+            ? allData[i][fieldIdx].trim()
+            : allData[i][fieldIdx];
         j++;
         i++;
       } else {
@@ -244,7 +247,7 @@ export function parseCsvRowsByFieldType(rows, geoFieldIdx, field, i) {
 
 /**
  * Analyze field types from data in `string` format, e.g. uploaded csv.
- * Assign `type`, `tableFieldIndex` and `format` (timestamp only) to each field
+ * Assign `type`, `fieldIdx` and `format` (timestamp only) to each field
  *
  * @param data array of row object
  * @param fieldOrder array of field names as string
@@ -277,11 +280,11 @@ export function parseCsvRowsByFieldType(rows, geoFieldIdx, field, i) {
  * const fieldOrder = ['time', 'value', 'surge', 'isTrip', 'zeroOnes'];
  * const fields = getFieldsFromData(data, fieldOrder);
  * // fields = [
- * // {name: 'time', format: 'YYYY-M-D H:m:s', tableFieldIndex: 1, type: 'timestamp'},
- * // {name: 'value', format: '', tableFieldIndex: 4, type: 'integer'},
- * // {name: 'surge', format: '', tableFieldIndex: 5, type: 'real'},
- * // {name: 'isTrip', format: '', tableFieldIndex: 6, type: 'boolean'},
- * // {name: 'zeroOnes', format: '', tableFieldIndex: 7, type: 'integer'}];
+ * // {name: 'time', format: 'YYYY-M-D H:m:s', fieldIdx: 1, type: 'timestamp'},
+ * // {name: 'value', format: '', fieldIdx: 4, type: 'integer'},
+ * // {name: 'surge', format: '', fieldIdx: 5, type: 'real'},
+ * // {name: 'isTrip', format: '', fieldIdx: 6, type: 'boolean'},
+ * // {name: 'zeroOnes', format: '', fieldIdx: 7, type: 'integer'}];
  *
  */
 export function getFieldsFromData(data, fieldOrder) {
@@ -306,12 +309,14 @@ export function getFieldsFromData(data, fieldOrder) {
     return {
       name,
       format,
-      tableFieldIndex: index + 1,
+      fieldIdx: index,
       type: analyzerTypeToFieldType(type),
-      analyzerType: type
+      analyzerType: type,
+      valueAccessor: values => values[index]
     };
   });
 
+  // @ts-ignore
   return result;
 }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ export function findDefaultLayer(dataset, layerClasses) {
   return layerProps.map(props => {
     const layer = new layerClasses[props.type](props);
     return typeof layer.setInitialLayerConfig === 'function' && Array.isArray(dataset.allData)
-      ? layer.setInitialLayerConfig(dataset.allData)
+      ? layer.setInitialLayerConfig(dataset)
       : layer;
   });
 }
@@ -87,7 +87,7 @@ export function getLayerHoverProp({
     // deckgl layer to kepler-gl layer
     const layer = layers[overlay.props.idx];
 
-    if (layer && layer.getHoverData && layersToRender[layer.id]) {
+    if (object && layer && layer.getHoverData && layersToRender[layer.id]) {
       // if layer is visible and have hovered data
       const {
         config: {dataId}
@@ -96,7 +96,7 @@ export function getLayerHoverProp({
         return null;
       }
       const {allData, fields} = datasets[dataId];
-      const data = layer.getHoverData(object, allData);
+      const data = layer.getHoverData(object, allData, fields);
       const fieldsToShow = interactionConfig.tooltip.config.fieldsToShow[dataId];
 
       return {

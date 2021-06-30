@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,6 +44,8 @@ const withLocalSelector = ParentComponent => {
       this.selectorFromProps,
       (ctx, props) => mergeSelectors(ctx, props)
     );
+    // TODO: This is tricky to type, revisit
+    /** @type import('./with-local-selector').ContextSelector */
     contextSelector = createSelector(this.computedSelector, this.idFromProps, (selector, id) => ({
       selector,
       id

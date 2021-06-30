@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ import {IntlWrapper, mountWithTheme} from 'test/helpers/component-utils';
 import GeocoderPanelFactory from 'components/geocoder-panel';
 import {appInjector} from 'components/container';
 import {testForCoordinates} from 'components/geocoder/geocoder';
+import {cmpDatasetData, cmpObjectKeys} from '../../helpers/comparison-utils';
 
 const GeocoderPanel = appInjector.get(GeocoderPanelFactory);
 const MAPBOX_TOKEN = process.env.MapboxAccessToken;
@@ -62,30 +63,34 @@ test('GeocoderPanel - render', t => {
             {
               name: 'lt',
               format: '',
-              tableFieldIndex: 1,
+              fieldIdx: 0,
               type: 'integer',
-              analyzerType: 'INT'
+              analyzerType: 'INT',
+              valueAccessor: values => values[0]
             },
             {
               name: 'ln',
               format: '',
-              tableFieldIndex: 2,
+              fieldIdx: 1,
               type: 'integer',
-              analyzerType: 'INT'
+              analyzerType: 'INT',
+              valueAccessor: values => values[1]
             },
             {
               name: 'icon',
               format: '',
-              tableFieldIndex: 3,
+              fieldIdx: 2,
               type: 'string',
-              analyzerType: 'STRING'
+              analyzerType: 'STRING',
+              valueAccessor: values => values[2]
             },
             {
               name: 'text',
               format: '',
-              tableFieldIndex: 4,
+              fieldIdx: 3,
               type: 'string',
-              analyzerType: 'STRING'
+              analyzerType: 'STRING',
+              valueAccessor: values => values[3]
             }
           ],
           rows: [[55, 1, 'place', 'mock']]
@@ -157,12 +162,38 @@ test('GeocoderPanel - render', t => {
     [['geocoder_dataset']],
     'Should call removeDataset on onSelected'
   );
-  t.deepEqual(updateVisData.args, [mockPayload], 'Should call updateVisData onSelected');
+
+  cmpObjectKeys(
+    t,
+    [mockPayload],
+    updateVisData.args,
+    'onSelected payload should have the correct params'
+  );
+  const actualDatasets = updateVisData.args[0][0];
+  const mockDatasets = mockPayload[0];
+
+  mockDatasets.forEach((mockDataset, index) => {
+    const {data: mockDatasetData, ...restMockDataset} = mockDataset;
+    const {data: actualDatasetData, ...restActualDataset} = actualDatasets[0];
+    cmpDatasetData(t, mockDatasetData, actualDatasetData, mockDataset.id);
+    t.deepEqual(
+      restActualDataset,
+      restMockDataset,
+      `onSelected options dataset.${mockDataset.id} should be the same`
+    );
+  });
+
+  t.deepEqual(updateVisData.args[0][1], mockPayload[1], 'onSelected options should be correct');
+  t.deepEqual(
+    updateVisData.args[0][2],
+    mockPayload[2],
+    'onSelected configuration should be correct'
+  );
   const newVP = updateMap.args[0][0];
 
   t.deepEqual(
     {latitude: newVP.latitude, longitude: newVP.longitude, zoom: newVP.zoom},
-    {latitude: 57.5, longitude: 1.5, zoom: 5},
+    {latitude: 57.5, longitude: 1.5, zoom: 4},
     'Should call updateMap action on onSelected w/ new viewport'
   );
 
@@ -173,7 +204,7 @@ test('GeocoderPanel - render', t => {
   const newVP2 = updateMap.args[1][0];
   t.deepEqual(
     {latitude: newVP2.latitude, longitude: newVP2.longitude, zoom: newVP2.zoom},
-    {latitude: 55, longitude: 1, zoom: 12},
+    {latitude: 55, longitude: 1, zoom: 11},
     'Should call updateMapaction on onSelected w/o bbox'
   );
 

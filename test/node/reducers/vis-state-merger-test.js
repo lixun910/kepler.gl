@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -90,7 +90,7 @@ import {
 } from 'test/helpers/mock-state';
 
 import {
-  datasetCsvFields,
+  testFields,
   testAllData,
   timeFilterProps,
   dateFilterProps,
@@ -101,7 +101,7 @@ import {
 } from 'test/fixtures/test-csv-data';
 
 import {
-  datasetFields as testGeoJsonFields,
+  fields,
   datasetAllData as testGeoJsonAllData,
   geoJsonRateFilterProps,
   geoJsonTripFilterProps,
@@ -364,39 +364,6 @@ test('visStateMerger -> mergeLayer -> imcremental load', t => {
     'layerToBeMerged should be empty'
   );
 
-  t.end();
-});
-
-test('VisStateMerger.v1 -> mergeLayers -> toEmptyState', t => {
-  const savedConfig = cloneDeep(savedStateV1);
-  const parsedConfig = SchemaManager.parseSavedConfig(savedConfig.config);
-
-  const oldState = cloneDeep(InitialState);
-  const oldVisState = oldState.visState;
-
-  const parsedLayers = parsedConfig.visState.layers;
-
-  // mergeLayers
-  const mergedState = mergeLayers(oldState.visState, parsedLayers, true);
-
-  Object.keys(oldVisState).forEach(key => {
-    if (key === 'layerToBeMerged') {
-      t.deepEqual(
-        mergedState.layerToBeMerged,
-        parsedLayers,
-        'Should save layers to layerToBeMerged before data loaded'
-      );
-    } else {
-      t.deepEqual(mergedState[key], oldVisState[key], 'Should keep the rest of state same');
-    }
-  });
-  const parsedData = SchemaManager.parseSavedData(savedStateV1.datasets);
-
-  // load data into reducer
-  const stateWData = visStateReducer(mergedState, updateVisData(parsedData));
-
-  // test parsed layers
-  cmpLayers(t, mergedLayersV1, stateWData.layers, {id: true, color: true});
   t.end();
 });
 
@@ -1541,10 +1508,9 @@ test('VisStateMerger.v1 -> mergeFilters -> multiFilters', t => {
     [testCsvDataId]: {
       metadata: {
         id: testCsvDataId,
-        format: '',
         label: 'hello.csv'
       },
-      fields: datasetCsvFields.map(f => ({
+      fields: testFields.map(f => ({
         ...f,
         ...(f.name === 'time'
           ? {filterProps: timeFilterProps}
@@ -1615,15 +1581,20 @@ test('VisStateMerger.v1 -> mergeFilters -> multiFilters', t => {
           ],
           result: [1474588800000 - 1474588800000, 1472688000000 - 1472688000000, 0, 0]
         }
+      },
+      changedFilters: {
+        dynamicDomain: {'date-2': 'added'},
+        fixedDomain: {'time-0': 'added', 'epoch-4': 'added'},
+        cpu: {'date-2': 'added'},
+        gpu: {'time-0': 'added', 'epoch-4': 'added'}
       }
     },
     [testGeoJsonDataId]: {
       metadata: {
         id: testGeoJsonDataId,
-        format: '',
         label: 'zip.geojson'
       },
-      fields: testGeoJsonFields.map(f => ({
+      fields: fields.map(f => ({
         ...f,
         ...(f.name === 'TRIPS'
           ? {filterProps: geoJsonTripFilterProps}
@@ -1667,7 +1638,13 @@ test('VisStateMerger.v1 -> mergeFilters -> multiFilters', t => {
       color: 'donot test me',
       filteredIndex: [0],
       filteredIndexForDomain: [0],
-      fieldPairs: oldGeoJsonData.fieldPairs
+      fieldPairs: oldGeoJsonData.fieldPairs,
+      changedFilters: {
+        dynamicDomain: {'RATE-1': 'added', 'TRIPS-3': 'added'},
+        fixedDomain: null,
+        cpu: {'RATE-1': 'added'},
+        gpu: {'TRIPS-3': 'added'}
+      }
     }
   };
 

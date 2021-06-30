@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,3 +22,4 @@ export const CLOUDFRONT = 'https://d1a3f4spazzrp4.cloudfront.net';
 export const KEPLER_GL_BUCKET = 'kepler.gl';
 export const WEBSITE_ASSET_FOLDER = 'website';
 export const DEMO_LINK = '/demo';
+export const KEPLER_UNFOLDED_BUCKET = 'https://cdn.unfolded.ai/statics/keplergl/images';

@@ -10,6 +10,8 @@ Current supported languages are:
 | pt          | Portuguese |          |
 | ca          | Catalan    |          |
 | es          | Spanish    |          |
+| ja          | Japanese   |          |
+| cn          | Chinese    |          |
 
 ## Changing default language
 

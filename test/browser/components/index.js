@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,9 @@ import './side-panel';
 
 import './common';
 import './editor';
+import './filters';
 import './map-container-test';
 import './geocoder-panel-test';
 import './tooltip-config-test';
 import './bottom-widget-test';
+import './plot-container-test';

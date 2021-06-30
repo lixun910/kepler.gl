@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ const isAlreadySelected = (selectedLayers, layerId) =>
   selectedLayers.findIndex(l => l.id === layerId) === -1;
 
 function PolygonFilterFactory() {
+  /** @type {typeof import('./polygon-filter').PolygonFilter} */
   const PolygonFilter = React.memo(({filter, layers, setLayers}) => {
     const setNewLayers = useCallback(
       newLayers => {
@@ -36,7 +37,7 @@ function PolygonFilterFactory() {
       [setLayers]
     );
 
-    const selectedLayers = useMemo(() => layers.filter(l => filter.layerId.includes(l.id)), [
+    const selectedLayers = useMemo(() => layers.filter(l => filter.layerId?.includes(l.id)), [
       filter,
       layers
     ]);

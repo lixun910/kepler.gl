@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,6 +44,7 @@ import {
 } from 'test/fixtures/geojson';
 import {createNewDataEntry} from 'utils/dataset-utils';
 import {processGeojson} from 'processors/data-processor';
+import {copyTableAndUpdate} from 'utils/table-utils/kepler-table';
 
 test('#GeojsonLayer -> constructor', t => {
   const TEST_CASES = {
@@ -86,10 +87,7 @@ test('#GeojsonLayer -> formatLayerData', t => {
         }
       },
       datasets: {
-        [dataId]: {
-          ...preparedGeoDataset,
-          filteredIndex
-        }
+        [dataId]: copyTableAndUpdate(preparedGeoDataset, {filteredIndex})
       },
       assert: result => {
         const {layerData, layer} = result;
@@ -208,10 +206,7 @@ test('#GeojsonLayer -> formatLayerData', t => {
         }
       },
       datasets: {
-        [dataId]: {
-          ...preparedGeoDataset,
-          filteredIndex
-        }
+        [dataId]: copyTableAndUpdate(preparedGeoDataset, {filteredIndex})
       },
       assert: result => {
         const {layerData, layer} = result;
@@ -319,10 +314,7 @@ test('#GeojsonLayer -> formatLayerData', t => {
         }
       },
       datasets: {
-        [dataId]: {
-          ...prepareGeojsonDataset,
-          filteredIndex
-        }
+        [dataId]: copyTableAndUpdate(prepareGeojsonDataset, {filteredIndex})
       },
       assert: result => {
         const {layerData, layer} = result;

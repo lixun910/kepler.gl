@@ -63,6 +63,16 @@ export function validateLayersByDatasets(
   layers: ParsedConfig['visState']['layers']
 ): {validated: Layer[]; failed: ParsedConfig['visState']['layers']};
 
+export function validateColumn(
+  // TODO: Better types here
+  column: any, 
+  columns: any[], 
+  allFields: Dataset['fields']
+): boolean;
+
+export function createLayerFromConfig(state: VisState, layerConfig: any): Layer;
+export function serializeLayer(Layer): ParsedLayer
+
 export type VisStateMergers = Merger[];
 
 export const VIS_STATE_MERGERS: VisStateMergers;

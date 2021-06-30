@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,8 @@ const actionHandler = {
   [ActionTypes.ADD_FILTER]: visStateUpdaters.addFilterUpdater,
 
   [ActionTypes.ADD_LAYER]: visStateUpdaters.addLayerUpdater,
+
+  [ActionTypes.DUPLICATE_LAYER]: visStateUpdaters.duplicateLayerUpdater,
 
   [ActionTypes.ENLARGE_FILTER]: visStateUpdaters.enlargeFilterUpdater,
 
@@ -81,6 +83,9 @@ const actionHandler = {
 
   [ActionTypes.SET_FILTER_ANIMATION_TIME]: visStateUpdaters.setFilterAnimationTimeUpdater,
 
+  [ActionTypes.SET_FILTER_ANIMATION_TIME_CONFIG]:
+    visStateUpdaters.setFilterAnimationTimeConfigUpdater,
+
   [ActionTypes.SET_FILTER_ANIMATION_WINDOW]: visStateUpdaters.setFilterAnimationWindowUpdater,
 
   [ActionTypes.SET_FILTER_PLOT]: visStateUpdaters.setFilterPlotUpdater,
@@ -131,7 +136,9 @@ const actionHandler = {
 
   [ActionTypes.NEXT_FILE_BATCH]: visStateUpdaters.nextFileBatchUpdater,
 
-  [ActionTypes.PROCESS_FILE_CONTENT]: visStateUpdaters.processFileContentUpdater
+  [ActionTypes.PROCESS_FILE_CONTENT]: visStateUpdaters.processFileContentUpdater,
+
+  [ActionTypes.SET_LAYER_ANIMATION_TIME_CONFIG]: visStateUpdaters.setLayerAnimationTimeConfigUpdater
 };
 
 // construct vis-state reducer

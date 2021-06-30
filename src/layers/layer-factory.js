@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -313,6 +313,14 @@ export const LAYER_VIS_CONFIGS = {
     step: 0.1,
     group: PROPERTY_GROUPS.height,
     property: 'elevationScale'
+  },
+  enableElevationZoomFactor: {
+    type: 'boolean',
+    defaultValue: true,
+    label: 'layerVisConfigs.enableElevationZoomFactor',
+    group: PROPERTY_GROUPS.height,
+    property: 'enableElevationZoomFactor',
+    description: 'layerVisConfigs.enableElevationZoomFactorDescription'
   },
   elevationRange: {
     type: 'number',

@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -196,4 +196,8 @@ export function arrayInsert(arr, index, val) {
   }
 
   return [...arr.slice(0, index), val, ...arr.slice(index)];
+}
+
+export function isTest() {
+  return process?.env?.NODE_ENV === 'test';
 }

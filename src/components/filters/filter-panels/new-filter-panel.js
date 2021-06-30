@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ NewFilterPanelFactory.deps = [
 ];
 
 function NewFilterPanelFactory(FilterPanelHeader, SourceDataSelector, FieldSelector) {
+  /** @type {import('./filter-panel-types').FilterPanelComponent} */
   const NewFilterPanel = React.memo(
     ({idx, filter, datasets, allAvailableFields, setFilter, removeFilter, enlargeFilter}) => {
       const onFieldSelector = useCallback(field => setFilter(idx, 'name', field.name), [

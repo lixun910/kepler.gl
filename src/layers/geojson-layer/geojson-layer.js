@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -53,6 +53,7 @@ export const geojsonVisConfigs = {
   radiusRange: 'radiusRange',
   heightRange: 'elevationRange',
   elevationScale: 'elevationScale',
+  enableElevationZoomFactor: 'enableElevationZoomFactor',
   stroked: 'stroked',
   filled: 'filled',
   enable3d: 'enable3d',
@@ -243,7 +244,7 @@ export default class GeoJsonLayer extends Layer {
     this.updateMeta({bounds, fixedRadius, featureTypes});
   }
 
-  setInitialLayerConfig(allData) {
+  setInitialLayerConfig({allData}) {
     this.updateLayerMeta(allData);
 
     const {featureTypes} = this.meta;
@@ -291,6 +292,8 @@ export default class GeoJsonLayer extends Layer {
     };
 
     const pickable = interactionConfig.tooltip.enabled;
+    const hoveredObject = this.hasHoveredObject(objectHovered);
+
     return [
       new DeckGLGeoJsonLayer({
         ...defaultLayerProps,
@@ -319,13 +322,13 @@ export default class GeoJsonLayer extends Layer {
             : {})
         }
       }),
-      ...(this.isLayerHovered(objectHovered) && !visConfig.enable3d
+      ...(hoveredObject && !visConfig.enable3d
         ? [
             new DeckGLGeoJsonLayer({
               ...this.getDefaultHoverLayerProps(),
               ...layerProps,
               wrapLongitude: false,
-              data: [objectHovered.object],
+              data: [hoveredObject],
               getLineWidth: data.getLineWidth,
               getRadius: data.getRadius,
               getElevation: data.getElevation,

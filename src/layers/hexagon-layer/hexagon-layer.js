@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,7 @@ export const hexagonVisConfigs = {
   percentile: 'percentile',
   elevationPercentile: 'elevationPercentile',
   elevationScale: 'elevationScale',
+  enableElevationZoomFactor: 'enableElevationZoomFactor',
   colorAggregation: 'aggregation',
   sizeAggregation: 'sizeAggregation',
   enable3d: 'enable3d'
@@ -65,6 +66,7 @@ export default class HexagonLayer extends AggregationLayer {
     const zoomFactor = this.getZoomFactor(mapState);
     const {visConfig} = this.config;
     const radius = visConfig.worldUnitSize * 1000;
+    const hoveredObject = this.hasHoveredObject(objectHovered);
 
     return [
       new EnhancedHexagonLayer({
@@ -75,13 +77,13 @@ export default class HexagonLayer extends AggregationLayer {
       }),
 
       // render an outline of each hexagon if not extruded
-      ...(this.isLayerHovered(objectHovered) && !visConfig.enable3d
+      ...(hoveredObject && !visConfig.enable3d
         ? [
             new GeoJsonLayer({
               ...this.getDefaultHoverLayerProps(),
               wrapLongitude: false,
               data: [
-                hexagonToPolygonGeo(objectHovered, {}, radius * visConfig.coverage, mapState)
+                hexagonToPolygonGeo(hoveredObject, {}, radius * visConfig.coverage, mapState)
               ].filter(d => d),
               getLineColor: this.config.highlightColor,
               lineWidthScale: clamp([1, 100], radius * 0.1 * zoomFactor)

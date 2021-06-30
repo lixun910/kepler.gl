@@ -6,6 +6,7 @@ export type ColorRange = {
   category: string;
   colors: HexColor[];
   reversed?: boolean;
+  colorMap?: Map | object;
 };
 
 export type LayerTextLabel = {
@@ -103,6 +104,7 @@ export type LayerVisConfig = {
   angle: VisConfigNumber;
   worldUnitSize: VisConfigNumber;
   elevationScale: VisConfigNumber;
+  enableElevationZoomFactor: VisConfigBoolean;
   elevationRange: VisConfigRange;
   heightRange: VisConfigRange;
   coverageRange: VisConfigRange;
@@ -142,3 +144,4 @@ export const DEFAULT_CUSTOM_PALETTE: ColorRange;
 export const DEFAULT_COLOR_UI: ColorUI;
 export const LAYER_VIS_CONFIGS: LayerVisConfig;
 export const LAYER_TEXT_CONFIGS: LayerTextConfig;
+export const UNKNOWN_COLOR_KEY: string;

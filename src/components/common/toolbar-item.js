@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -56,6 +56,7 @@ const StyledDiv = styled.div.attrs({
   }
 `;
 
+/** @type {typeof import('./toolbar-item').ToolbarItem} */
 const ToolbarItem = React.memo(props => (
   <StyledDiv
     id={props.id}

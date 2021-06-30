@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ const ImageModalContainer = ({
   }, [onUpdateImageSetting, cleanupExportImage]);
 
   useEffect(() => {
-    if (currentProvider && cloudProviders.length) {
+    if (currentProvider && cloudProviders && cloudProviders.length) {
       const provider = cloudProviders.find(p => p.name === currentProvider);
 
       if (provider && provider.thumbnail) {
@@ -70,8 +70,7 @@ const ImageModalContainer = ({
 };
 
 ImageModalContainer.defaultProps = {
-  cloudProviders: [],
-  currentProvider: null
+  cloudProviders: []
 };
 
 export default ImageModalContainer;

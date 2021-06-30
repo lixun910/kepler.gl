@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ import {
   preparedFilterDomain0
 } from 'test/helpers/layer-utils';
 import S2GeometryLayer, {defaultElevation} from 'layers/s2-geometry-layer/s2-geometry-layer';
+import {copyTableAndUpdate} from 'utils/table-utils/kepler-table';
 
 test('#S2Geometry -> constructor', t => {
   const TEST_CASES = [
@@ -56,6 +57,7 @@ test('#S2Geometry -> constructor', t => {
             'stroked',
             'enable3d',
             'elevationScale',
+            'enableElevationZoomFactor',
             'heightRange',
             'wireframe'
           ],
@@ -89,10 +91,7 @@ test('#S2Geometry -> formatLayerData', t => {
         }
       },
       datasets: {
-        [dataId]: {
-          ...preparedDataset,
-          filteredIndex
-        }
+        [dataId]: copyTableAndUpdate(preparedDataset, {filteredIndex})
       },
       assert: result => {
         const {layerData, layer} = result;
@@ -186,10 +185,7 @@ test('#S2Geometry -> formatLayerData', t => {
         }
       },
       datasets: {
-        [dataId]: {
-          ...preparedDataset,
-          filteredIndex
-        }
+        [dataId]: copyTableAndUpdate(preparedDataset, {filteredIndex})
       },
       assert: result => {
         const {layerData} = result;

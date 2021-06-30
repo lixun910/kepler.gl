@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -55,4 +55,16 @@ export function merge_(obj) {
 
 export function pick_(prop) {
   return fn => state => ({...state, [prop]: fn(state[prop])});
+}
+
+export function swap_(item) {
+  return arr => arr.map(a => (a.id === item.id ? item : a));
+}
+
+export function findById(id) {
+  return arr => arr.find(a => a.id === id);
+}
+
+export function map_(fn) {
+  return arr => arr.map(e => fn(e));
 }

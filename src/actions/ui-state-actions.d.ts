@@ -20,6 +20,7 @@
 
 import ActionTypes from 'constants/action-types';
 import {Merge} from '../reducers/types';
+import {ExportImage} from '../reducers/ui-state-updaters';
 
 /** TOGGLE_SIDE_PANEL */
 export type ToggleSidePanelUpdaterAction = {
@@ -91,27 +92,19 @@ export function removeNotification(
 
 /** SET_EXPORT_IMAGE_SETTING */
 export type SetExportImageSettingUpdaterAction = {
-  payload: {
-    ratio?: string;
-    resolution?: string;
-    legend?: string;
-    center?: boolean;
-    exporting?: boolean;
-    processing?: boolean;
-  };
+  payload: Partial<ExportImage>;
 };
-export function setExportImageSetting(newSetting:
-  SetExportImageSettingUpdaterAction['payload']
+export function setExportImageSetting(
+  newSetting: SetExportImageSettingUpdaterAction['payload']
 ): Merge<SetExportImageSettingUpdaterAction, {type: ActionTypes.SET_EXPORT_IMAGE_SETTING}>;
 
 /** START_EXPORTING_IMAGE */
 export function startExportingImage(options?: {
   ratio?: string;
   resolution?: string;
-  legend?: string,
-  center?: boolean
+  legend?: string;
+  center?: boolean;
 }): Merge<SetExportImageSettingUpdaterAction, {type: ActionTypes.START_EXPORT_IMAGE}>;
-
 
 /** SET_EXPORT_IMAGE_DATA_URI */
 export type SetExportImageDataUriUpdaterAction = {

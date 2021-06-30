@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ export const gridVisConfigs = {
   percentile: 'percentile',
   elevationPercentile: 'elevationPercentile',
   elevationScale: 'elevationScale',
+  enableElevationZoomFactor: 'enableElevationZoomFactor',
   colorAggregation: 'aggregation',
   sizeAggregation: 'sizeAggregation',
   enable3d: 'enable3d'
@@ -60,6 +61,7 @@ export default class GridLayer extends AggregationLayer {
     const zoomFactor = this.getZoomFactor(mapState);
     const {visConfig} = this.config;
     const cellSize = visConfig.worldUnitSize * 1000;
+    const hoveredObject = this.hasHoveredObject(objectHovered);
 
     return [
       new EnhancedGridLayer({
@@ -70,14 +72,14 @@ export default class GridLayer extends AggregationLayer {
       }),
 
       // render an outline of each cell if not extruded
-      ...(this.isLayerHovered(objectHovered) && !visConfig.enable3d
+      ...(hoveredObject && !visConfig.enable3d
         ? [
             new GeoJsonLayer({
               ...this.getDefaultHoverLayerProps(),
               wrapLongitude: false,
               data: [
                 pointToPolygonGeo({
-                  object: objectHovered.object,
+                  object: hoveredObject,
                   cellSize,
                   coverage: visConfig.coverage,
                   mapState

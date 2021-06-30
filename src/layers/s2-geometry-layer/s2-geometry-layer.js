@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -60,6 +60,7 @@ export const S2VisConfigs = {
   // height
   enable3d: 'enable3d',
   elevationScale: 'elevationScale',
+  enableElevationZoomFactor: 'enableElevationZoomFactor',
   heightRange: 'elevationRange',
 
   // wireframe

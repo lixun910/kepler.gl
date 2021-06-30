@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,9 @@ export const LOCALES = {
   fi: 'Suomi',
   pt: 'Português',
   es: 'Español',
-  ca: 'Català'
+  ca: 'Català',
+  ja: '日本語',
+  cn: '简体中文'
 };
 
 /**
