@@ -1,9 +1,3 @@
-export {
-  getDataByFieldName
-} from './geojson-utils';
+export {getDataByFieldName} from './geojson-utils';
 
-export {
-  hexToRgb,
-  hexToRgbStr,
-  colorbrewer
-} from './colorbrewer';
+export {hexToRgb, hexToRgbStr, colorbrewer} from './colorbrewer';

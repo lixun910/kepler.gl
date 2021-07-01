@@ -1,4 +1,3 @@
-
 /**
  * Get column data from geojson
  *
@@ -6,15 +5,14 @@
  * @param {string} fieldName
  * @returns {array} values of the column
  */
-export function getDataByFieldName(rawData, fieldName){
-  let values = [];
+export function getDataByFieldName(rawData, fieldName) {
+  const values = [];
   for (const feat of rawData) {
-    const v =  feat.properties[fieldName];
-    values.push(v? v: 0);
+    const v = feat.properties[fieldName];
+    values.push(v ? v : 0);
   }
   return values;
 }
-
 
 /**
  * Get numeric fields from geojson
@@ -23,11 +21,10 @@ export function getDataByFieldName(rawData, fieldName){
  * @returns {array} all numeric fields
  */
 export function getNumericFields(fieldsInfo) {
-  let fields = [];
+  const fields = [];
   const n = fieldsInfo.length;
-  for (let i=0; i<n; ++i) {
-    if (fieldsInfo[i].analyzerType == "INT" ||
-        fieldsInfo[i].analyzerType == "FLOAT") {
+  for (let i = 0; i < n; ++i) {
+    if (fieldsInfo[i].analyzerType === 'INT' || fieldsInfo[i].analyzerType === 'FLOAT') {
       fields.push(fieldsInfo[i].name);
     }
   }

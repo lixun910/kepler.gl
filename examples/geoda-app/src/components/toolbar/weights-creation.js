@@ -1,5 +1,5 @@
-import React  from 'react';
-import {Dialog, Box, Button, TextField, Typography,Grid} from '@material-ui/core';
+import React from 'react';
+import {Dialog, Box, Button, TextField, Typography, Grid} from '@material-ui/core';
 import {FormattedMessage} from 'react-intl';
 
 import {DialogTitle, DialogContent, DialogActions} from '../modal-dlg';
@@ -7,8 +7,8 @@ import DefaultButton from './default-button';
 import WeightsTabs from './weights-tabs';
 
 export default class WeightsCreation extends DefaultButton {
-
-  createWeights = (event) => {
+  // create a spatial weights
+  createWeights = event => {
     event.preventDefault();
 
     const conf = this._weightsTabs.getWeightsCreationConfig();
@@ -16,38 +16,39 @@ export default class WeightsCreation extends DefaultButton {
     const map_uid = this.getMapUID();
     let w = null;
 
-    if (conf.WeightsType == 'contiguity') {
+    if (conf.WeightsType === 'contiguity') {
       const order = conf.contiguity.Order;
       const includeLowerOrder = conf.contiguity.IncludeLowerOrder;
       const precisionThreshold = conf.contiguity.PrecisionThresholdValue;
 
-      if (conf.contiguity.ContiguityType == 'rook') {
+      if (conf.contiguity.ContiguityType === 'rook') {
         w = jsgeoda.CreateRookWeights(map_uid, order, includeLowerOrder, precisionThreshold);
       } else {
         w = jsgeoda.CreateQueenWeights(map_uid, order, includeLowerOrder, precisionThreshold);
       }
-    } else if (conf.WeightsType == 'distance') {
-
+    } else if (conf.WeightsType === 'distance') {
+      // placeholder
+      // not implemented yet
     }
 
     const weightsUniqueId = w.get_uid();
-    console.log(weightsUniqueId);
+    // console.log(weightsUniqueId);
 
     // save to global store
     const n = Object.keys(this.props.demo.geoda.weights[map_uid]).length;
     this.props.demo.geoda.weights[map_uid][weightsUniqueId] = {
-      'idx' : n,
-      'uid' : weightsUniqueId,
-      'name' : this.state.weightsName,
-      'type' : conf.WeightsType,
-      'isSymmetric' : w.get_is_symmetric() ? "yes" : "no",
-      'numObs' : w.get_num_obs(),
-      'minNbrs' : w.get_min_nbrs(),
-      'maxNbrs' : w.get_max_nbrs(),
-      'meanNbrs': w.get_mean_nbrs(),
-      'medianNbrs' : w.get_median_nbrs(),
-      'sparsity' : w.get_sparsity(),
-      'density' : w.get_density()
+      idx: n,
+      uid: weightsUniqueId,
+      name: this.state.weightsName,
+      type: conf.WeightsType,
+      isSymmetric: w.get_is_symmetric() ? 'yes' : 'no',
+      numObs: w.get_num_obs(),
+      minNbrs: w.get_min_nbrs(),
+      maxNbrs: w.get_max_nbrs(),
+      meanNbrs: w.get_mean_nbrs(),
+      medianNbrs: w.get_median_nbrs(),
+      sparsity: w.get_sparsity(),
+      density: w.get_density()
     };
 
     // update UI
@@ -56,10 +57,10 @@ export default class WeightsCreation extends DefaultButton {
 
   state = {
     open: this.props.isOpen, // overwrite parent class
-    weightsName : ''
-  }
+    weightsName: ''
+  };
 
-  weightsNameChange = (event) => {
+  weightsNameChange = event => {
     this.setState({
       open: this.state.open,
       weightsName: event.target.value

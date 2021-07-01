@@ -5,32 +5,29 @@ import {
 } from '@material-ui/core';
 
 export default class WeightsSelect extends React.Component {
+  state = {selected: ''};
 
-  state = {selected: ""};
-
-  getSelected = ()=> {
+  getSelected = () => {
     return this.props.weightsItems[this.state.selected];
   };
 
-
-  handleChange = (event) => {
+  handleChange = event => {
     this.setState({
       selected: event.target.value
     });
   };
 
   render() {
-    if (this.state.selected == "") {
+    if (this.state.selected === '') {
       if (this.props.weightsItems.length > 0) {
-        this.state.selected = 0;
+        // this.state.selected = 0;
+        this.setState({...this.state, selected: 0});
       }
     }
 
     return (
       <Box mt={1}>
-        <InputLabel id="weights-select-label">
-          Select a spatial weights:
-        </InputLabel>
+        <InputLabel id="weights-select-label">Select a spatial weights:</InputLabel>
         <Box mt={1}>
           <Select
             required
@@ -43,15 +40,13 @@ export default class WeightsSelect extends React.Component {
             margin="dense"
             fullWidth
           >
-            {this.props.weightsItems.map((w,index)=>{
-              const labelId = `checkbox-list-label-${index}`;
-              const wType = 'Q';
+            {this.props.weightsItems.map((w, index) => {
               return (
                 <MenuItem key={index} value={index}>
                   <ListItemIcon>Q</ListItemIcon>
                   <ListItemText primary={w.name} />
                 </MenuItem>
-              )
+              );
             })}
           </Select>
         </Box>

@@ -24,6 +24,6 @@ export default class DistanceTabPanel extends React.Component {
 
 DistanceTabPanel.propTypes = {
   children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired
 };

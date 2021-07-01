@@ -34,17 +34,17 @@ const en = {
   'loadRemoteMap.clickHere':
     '<a rel="noopener noreferrer" target="_blank" href="{corsLink}">click here</a>',
   'loadRemoteMap.fetch': 'Fetch',
-  'geoda.map.createThemeMap': "Create Choropleth Map:",
+  'geoda.map.createThemeMap': 'Create Choropleth Map:',
   'geoda.map.quantileMap': 'Quantile Map',
-  'geoda.map.createMap' : 'Createa Map',
-  'geoda.close' : 'Close',
-  'geoda.ok' : 'OK',
-  'geoda.weights.createWeightsDlg' : 'Create Spatial Weights:',
-  'geoda.weights.create' : 'Create',
-  'geoda.weights.inputWeightsName' : 'Input the weights name:',
-  'geoda.weights.ordercontiguity' : 'Order of contiguity:',
-  'geoda.weights.managerDialog' : 'Spatial Weights Management',
-  'geoda.sa.unilocalmoran' : 'Univariate Local Moran',
+  'geoda.map.createMap': 'Createa Map',
+  'geoda.close': 'Close',
+  'geoda.ok': 'OK',
+  'geoda.weights.createWeightsDlg': 'Create Spatial Weights:',
+  'geoda.weights.create': 'Create',
+  'geoda.weights.inputWeightsName': 'Input the weights name:',
+  'geoda.weights.ordercontiguity': 'Order of contiguity:',
+  'geoda.weights.managerDialog': 'Spatial Weights Management',
+  'geoda.sa.unilocalmoran': 'Univariate Local Moran'
 };
 
 export const messages = {

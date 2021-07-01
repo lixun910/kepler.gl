@@ -1,34 +1,34 @@
+/* eslint-disable guard-for-in */
+/* eslint-disable prettier/prettier */
 export function hexToRgb(hex) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? [
-    parseInt(result[1], 16),
-    parseInt(result[2], 16),
-    parseInt(result[3], 16)
-  ] : null;
+  return result
+    ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
+    : null;
 }
 
 export function hexToRgbStr(hex) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? 'rgb(' +
-    parseInt(result[1], 16) + ',' +
-    parseInt(result[2], 16) + ',' +
-    parseInt(result[3], 16) +
-  ')' : '';
+  return result
+    ? `rgb(${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)})`
+    : '';
 }
 
-export const colorbrewer = {schemeGroups: {
-  sequential: ["BuGn","BuPu","GnBu","OrRd","PuBu","PuBuGn","PuRd","RdPu","YlGn","YlGnBu","YlOrBr","YlOrRd"],
-  singlehue:["Blues","Greens","Greys","Oranges","Purples","Reds"],
-  diverging: ["BrBG","PiYG","PRGn","PuOr","RdBu","RdGy","RdYlBu","RdYlGn","Spectral"],
-  qualitative: ["Accent","Dark2","Paired","Pastel1","Pastel2","Set1","Set2","Set3"]
-  }, YlGn: {
-  3: ["#f7fcb9","#addd8e","#31a354"],
-  4: ["#ffffcc","#c2e699","#78c679","#238443"],
-  5: ["#ffffcc","#c2e699","#78c679","#31a354","#006837"],
-  6: ["#ffffcc","#d9f0a3","#addd8e","#78c679","#31a354","#006837"],
-  7: ["#ffffcc","#d9f0a3","#addd8e","#78c679","#41ab5d","#238443","#005a32"],
-  8: ["#ffffe5","#f7fcb9","#d9f0a3","#addd8e","#78c679","#41ab5d","#238443","#005a32"],
-  9: ["#ffffe5","#f7fcb9","#d9f0a3","#addd8e","#78c679","#41ab5d","#238443","#006837","#004529"]
+export const colorbrewer = {
+  schemeGroups: {
+    sequential: ["BuGn","BuPu","GnBu","OrRd","PuBu","PuBuGn","PuRd","RdPu","YlGn","YlGnBu","YlOrBr","YlOrRd"],
+    singlehue:["Blues","Greens","Greys","Oranges","Purples","Reds"],
+    diverging: ["BrBG","PiYG","PRGn","PuOr","RdBu","RdGy","RdYlBu","RdYlGn","Spectral"],
+    qualitative: ["Accent","Dark2","Paired","Pastel1","Pastel2","Set1","Set2","Set3"]
+  },
+  YlGn: {
+    3: ["#f7fcb9","#addd8e","#31a354"],
+    4: ["#ffffcc","#c2e699","#78c679","#238443"],
+    5: ["#ffffcc","#c2e699","#78c679","#31a354","#006837"],
+    6: ["#ffffcc","#d9f0a3","#addd8e","#78c679","#31a354","#006837"],
+    7: ["#ffffcc","#d9f0a3","#addd8e","#78c679","#41ab5d","#238443","#005a32"],
+    8: ["#ffffe5","#f7fcb9","#d9f0a3","#addd8e","#78c679","#41ab5d","#238443","#005a32"],
+    9: ["#ffffe5","#f7fcb9","#d9f0a3","#addd8e","#78c679","#41ab5d","#238443","#006837","#004529"]
   },YlGnBu: {
   3: ["#edf8b1","#7fcdbb","#2c7fb8"],
   4: ["#ffffcc","#a1dab4","#41b6c4","#225ea8"],
@@ -323,7 +323,7 @@ export const colorbrewer = {schemeGroups: {
   12: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"]
   }};
 
-  colorbrewer['BuRd'] = colorbrewer['RdBu'];
-  for (let idx in colorbrewer.BuRd) {
+  colorbrewer.BuRd = colorbrewer.RdBu;
+  for (const idx in colorbrewer.BuRd) {
     colorbrewer.BuRd[idx] = colorbrewer.BuRd[idx].reverse();
   }

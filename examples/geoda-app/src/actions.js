@@ -351,18 +351,18 @@ export const openFileDialog = createAction('OPEN_FILE_DIALOG');
 
 export function loadJsgeoda(state, action) {
   jsgeoda.New().then(geoda => {
-    state["geoda"]["jsgeoda"] = geoda;
-    const loadFiles = action.payload.files;
-    for (let i=0; i<loadFiles.length; ++i) {
-      const f = loadFiles[i];
+    state.geoda.jsgeoda = geoda;
+    const loadJsFiles = action.payload.files;
+    for (let i = 0; i < loadJsFiles.length; ++i) {
+      const f = loadJsFiles[i];
       state.geoda.file_ids[f.name] = true;
       var fileReader = new FileReader();
-      fileReader.onload = function (event) {
+      fileReader.onload = event => {
         const ab = event.target.result;
         const fname = event.target.fileName;
-        let map_uid = geoda.ReadGeojsonMap(fname, ab);
-        state["geoda"]["mapUIds"].push(map_uid);
-        state["geoda"]["currentMapUid"] = map_uid;
+        const map_uid = geoda.ReadGeojsonMap(fname, ab);
+        state.geoda.mapUIds.push(map_uid);
+        state.geoda.currentMapUid = map_uid;
       };
       fileReader.readAsArrayBuffer(f);
       fileReader.fileName = f.name;

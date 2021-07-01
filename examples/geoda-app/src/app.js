@@ -34,12 +34,7 @@ import {replacePanelHeader} from './factories/panel-header';
 import {AUTH_TOKENS, GEODA_MAP_ID} from './constants/default-settings';
 import {messages} from './constants/localization';
 
-import {
-  loadRemoteMap,
-  loadSampleConfigurations,
-  onExportFileSuccess,
-  onLoadCloudMapSuccess
-} from './actions';
+import {loadRemoteMap, onExportFileSuccess, onLoadCloudMapSuccess} from './actions';
 
 import {loadCloudMap} from 'kepler.gl/actions';
 import {CLOUD_PROVIDERS} from './cloud-providers';
@@ -101,7 +96,7 @@ class App extends Component {
   componentDidMount() {
     // if we pass an id as part of the url
     // we ry to fetch along map configurations
-    const {params: {id, provider} = {}, location: {query = {}} = {}} = this.props;
+    const {params: {provider} = {}, location: {query = {}} = {}} = this.props;
 
     const cloudProvider = CLOUD_PROVIDERS.find(c => c.name === provider);
     if (cloudProvider) {
@@ -116,9 +111,9 @@ class App extends Component {
     }
 
     // Load sample using its id
-    //if (id) {
-      //this.props.dispatch(loadSampleConfigurations(id));
-    //}
+    // if (id) {
+    //    this.props.dispatch(loadSampleConfigurations(id));
+    // }
 
     // Load map using a custom
     if (query.mapUrl) {
@@ -173,9 +168,9 @@ class App extends Component {
   }
 
   _loadSampleData() {
-    //this._loadPointData();
+    // this._loadPointData();
     // this._loadGeojsonData();
-    //this._loadTripGeoJson();
+    // this._loadTripGeoJson();
     // this._loadIconData();
     // this._loadH3HexagonData();
     // this._loadS2Data();
@@ -205,7 +200,7 @@ class App extends Component {
     }
   };
 
-  localeMessages = (locale) => messages[locale];
+  localeMessages = locale => messages[locale];
 
   render() {
     return (
@@ -226,7 +221,11 @@ class App extends Component {
           >
             <Announcement onDisable={this._disableBanner} />
           </Banner>
-          <IntlProvider locale={this.props.demo.geoda.locale} messages={this.localeMessages(this.props.demo.geoda.locale)} defaultLocale="en">
+          <IntlProvider
+            locale={this.props.demo.geoda.locale}
+            messages={this.localeMessages(this.props.demo.geoda.locale)}
+            defaultLocale="en"
+          >
             <GeoDaToolbar {...this.props} />
           </IntlProvider>
           <div

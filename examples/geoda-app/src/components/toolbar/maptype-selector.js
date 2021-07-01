@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
@@ -7,49 +6,42 @@ import Box from '@material-ui/core/Box';
 import MapTwoToneIcon from '@material-ui/icons/Map';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 
-import {FormattedMessage} from 'react-intl';
-
-import {FieldTokenFactory, appInjector} from 'kepler.gl/components';
-import {ALL_FIELD_TYPES} from 'kepler.gl/constants';
-const FieldToken = appInjector.get(FieldTokenFactory);
-
 const mapTypes = {
-  "Quantile" : "quantile_breaks",
-  "Percentile" : "percentile_breaks",
-  "Box Map (Hinge=1.5)" : "hinge15_breaks",
-  "Box Map (Hinge=3.0)": "hinge30_breaks",
-  "Standard Deviation": "stddev_breaks",
-  "Natural Breaks" : "natural_breaks",
-  "Equal Intervals" : "equalinterval_breaks"
+  Quantile: 'quantile_breaks',
+  Percentile: 'percentile_breaks',
+  'Box Map (Hinge=1.5)': 'hinge15_breaks',
+  'Box Map (Hinge=3.0)': 'hinge30_breaks',
+  'Standard Deviation': 'stddev_breaks',
+  'Natural Breaks': 'natural_breaks',
+  'Equal Intervals': 'equalinterval_breaks'
 };
 
 const mapFixedBins = [
-  "Percentile",
-  "Box Map (Hinge=1.5)",
-  "Box Map (Hinge=3.0)",
-  "Standard Deviation"
+  'Percentile',
+  'Box Map (Hinge=1.5)',
+  'Box Map (Hinge=3.0)',
+  'Standard Deviation'
 ];
 
 export default class MapTypeSelect extends React.Component {
-  //classes = useStyles();
+  // classes = useStyles();
 
   state = {
     mapType: 'Box Map (Hinge=1.5)',
     category: '6'
   };
 
-  getMapType= ()=> {
+  getMapType = () => {
     return mapTypes[this.state.mapType];
   };
 
-  getCategoryNumber= ()=> {
-    return parseInt(this.state.category);
+  getCategoryNumber = () => {
+    return parseInt(this.state.category, 10);
   };
 
-  mapTypeChange = (event) => {
+  mapTypeChange = event => {
     const selectMapType = event.target.value;
     const k = mapFixedBins.includes(selectMapType) ? '6' : this.state.category;
 
@@ -59,29 +51,28 @@ export default class MapTypeSelect extends React.Component {
     });
   };
 
-  categoryChange = (event) => {
+  categoryChange = event => {
     this.setState({
       ...this.state,
-      category : event.target.value
+      category: event.target.value
     });
   };
 
-  fieldOptions = Object.keys(mapTypes).map((mapType,index)=>{
+  fieldOptions = Object.keys(mapTypes).map((mapType, index) => {
     return (
       <MenuItem key={index} value={mapType}>
-          <ListItemIcon><MapTwoToneIcon/></ListItemIcon>
-          <ListItemText primary={mapType} />
+        <ListItemIcon>
+          <MapTwoToneIcon />
+        </ListItemIcon>
+        <ListItemText primary={mapType} />
       </MenuItem>
-    )
-  })
+    );
+  });
 
   render() {
-
     return (
       <Box mt={1}>
-        <InputLabel id="maptype-select-label">
-          Select a classification method:
-        </InputLabel>
+        <InputLabel id="maptype-select-label">Select a classification method:</InputLabel>
         <Box mt={1}>
           <Select
             labelId="map-select-label"
@@ -96,9 +87,7 @@ export default class MapTypeSelect extends React.Component {
           </Select>
         </Box>
         <Box mt={1}>
-          <InputLabel id="variable-category-label">
-            Number of Categories
-          </InputLabel>
+          <InputLabel id="variable-category-label">Number of Categories</InputLabel>
           <TextField
             autoFocus
             required
@@ -111,7 +100,7 @@ export default class MapTypeSelect extends React.Component {
             onChange={this.categoryChange}
             variant="filled"
             helperText=""
-            InputProps={{ inputProps: {min: 1, max: 200} }}
+            InputProps={{inputProps: {min: 1, max: 200}}}
             fullWidth
           />
         </Box>

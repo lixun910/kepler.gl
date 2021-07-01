@@ -159,7 +159,7 @@
     "s2-geometry": "^1.2.10",
     "supercluster": "^7.1.0",
     "type-analyzer": "0.3.0",
-    "typedoc": "^0.19.2",
+    "typedoc": "^0.20.0",
     "viewport-mercator-project": "^6.0.0",
     "wellknown": "^0.5.0"
   },
