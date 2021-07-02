@@ -478,3 +478,71 @@ export function createChroplethMap(conf) {
 
   return newConfig;
 }
+
+export function createLocalMoranMap(conf) {
+  const COLOR_LOCAL_MORAN = [
+    '#eeeeee',
+    '#FF0000',
+    '#0000FF',
+    '#a7adf9',
+    '#f4ada8',
+    '#464646',
+    '#999999'
+  ];
+  const LABEL_LOCAL_MORAN = [
+    'Not significant',
+    'High-High',
+    'Low-Low',
+    'High-Low',
+    'Low-High',
+    'Undefined',
+    'Isolated'
+  ];
+  const mapUid = conf.mapUid;
+  const wuid = conf.wuid;
+  const geoda = conf.jsgeoda;
+  const values = conf.values;
+  const varName = conf.varName;
+  const oldLayer = conf.oldLayer;
+  // const cutoff = 0.05;
+  // const permutations = 999;
+
+  const colors = COLOR_LOCAL_MORAN.map(hex => hexToRgb(hex));
+
+  const lisa = geoda.local_moran(mapUid, wuid, values);
+  const lisaCat = geoda.parseVecDouble(lisa.clusters());
+
+  const returnFillColor = (obj, element) => {
+    const i = lisaCat[element.index];
+    return colors[i];
+  };
+
+  // used to trigger legend update: adding colorLegends
+  // { "rgba()" : "label1"}
+  const colorLegends = {};
+  for (let i = 0; i < colors.length; ++i) {
+    const hex = COLOR_LOCAL_MORAN[i];
+    const clr = hexToRgbStr(hex);
+    const lbl = LABEL_LOCAL_MORAN[i];
+    colorLegends[clr] = lbl;
+  }
+
+  const newConfig = {
+    color: [0, 255, 0], // color is not used but can trigger the map to redraw
+    layerData: {getFillColor: returnFillColor},
+    colorField: {
+      name: varName,
+      type: 'integer'
+    }, // trigger updating legend
+    visConfig: {
+      ...oldLayer.config.visConfig,
+      colorRange: {
+        colors: COLOR_LOCAL_MORAN,
+        colorLegends,
+        colorMap: null // avoid getColorScale() to overwrite custom color
+      }
+    }
+  };
+
+  return newConfig;
+}

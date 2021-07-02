@@ -1,11 +1,17 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import {
-  Box, Select, ListItemIcon,ListItemText, MenuItem, InputLabel
-} from '@material-ui/core';
+import {Box, Select, ListItemIcon, ListItemText, MenuItem, InputLabel} from '@material-ui/core';
 
 export default class WeightsSelect extends React.Component {
   state = {selected: ''};
+
+  componentDidMount = () => {
+    if (this.state.selected === '') {
+      if (this.props.weightsItems.length > 0) {
+        // this.state.selected = 0;
+        this.setState({...this.state, selected: 0});
+      }
+    }
+  };
 
   getSelected = () => {
     return this.props.weightsItems[this.state.selected];
@@ -18,13 +24,6 @@ export default class WeightsSelect extends React.Component {
   };
 
   render() {
-    if (this.state.selected === '') {
-      if (this.props.weightsItems.length > 0) {
-        // this.state.selected = 0;
-        this.setState({...this.state, selected: 0});
-      }
-    }
-
     return (
       <Box mt={1}>
         <InputLabel id="weights-select-label">Select a spatial weights:</InputLabel>

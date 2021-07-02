@@ -261,7 +261,7 @@ const composedReducer = (state, action) => {
       state.geoda.loaded = true; // enable geoda features
       action.result.map((result, index) => {
         const uid = result.info.label;
-        state.geoda.fields[uid] = result.data.fields; // 0 means the top one
+        state.geoda.fields[uid] = result.data.fields;
         state.geoda.weights[uid] = {}; // empty weights
       });
       break;
@@ -271,13 +271,6 @@ const composedReducer = (state, action) => {
         // in case of GeoDa choropleth map, show legend
         state.keplerGl[GEODA_MAP_ID].uiState.mapControls.mapLegend = {show: true, active: true};
       }
-      break;
-
-    case '@@kepler.gl/TOGGLE_MAP_CONTROL':
-      break;
-
-    case 'OPEN_FILE_DIALOG':
-      // state.keplerGl[GEODA_MAP_ID].uiState.currentModal = 'addData';
       break;
 
     case 'CREATE_WEIGHTS':

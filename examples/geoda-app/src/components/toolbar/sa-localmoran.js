@@ -4,98 +4,32 @@ import Dialog from '@material-ui/core/Dialog';
 import {FormattedMessage} from 'react-intl';
 import {wrapTo, layerConfigChange} from 'kepler.gl/actions';
 
-import {getDataByFieldName, hexToRgb, hexToRgbStr} from '../../utils';
+import {getDataByFieldName} from '../../utils';
 import VariableSelect from '../utils/field-selector';
 import WeightsSelect from '../utils/weights-selector';
 import {DialogTitle, DialogContent, DialogActions} from '../modal-dlg';
 import DefaultButton from './default-button';
-
-const COLOR_LOCAL_MORAN = [
-  '#eeeeee',
-  '#FF0000',
-  '#0000FF',
-  '#a7adf9',
-  '#f4ada8',
-  '#464646',
-  '#999999'
-];
-
-const LABEL_LOCAL_MORAN = [
-  'Not significant',
-  'High-High',
-  'Low-Low',
-  'High-Low',
-  'Low-High',
-  'Undefined',
-  'Isolated'
-];
+import {createLocalMoranMap} from '../../actions';
 
 export default class LocalMoranDialog extends DefaultButton {
-  formatNumeric = val => {
-    if (val === Infinity || val === -Infinity) {
-      return val;
-    } else if (val === Number(val)) {
-      return val;
-    }
-    return val.toFixed(2);
-  };
-
-  printRange = (v1, v2) => {
-    return `[${this.formatNumeric(v1)}, ${this.formatNumeric(v2)})`;
-  };
-
   onOKClick = event => {
     event.preventDefault();
 
     const mapID = this.getMapId();
-    const varName = this._variableSelect.getSelected();
-    const weights = this._weightsSelect.getSelected();
-    // const cutoff = 0.05;
-    // const permutations = 999;
-
-    const map_uid = this.getMapUID();
-    const jsgeoda = this.getJsGeoDa();
     const oldLayerData = this.getTopLayerData();
+    const varName = this._variableSelect.getSelected();
+    const oldLayer = this.getTopLayer();
 
-    const values = getDataByFieldName(oldLayerData.data, varName);
-    const lisa = jsgeoda.local_moran(map_uid, weights.uid, values);
-    const colors = COLOR_LOCAL_MORAN.map(hex => hexToRgb(hex));
-    const lisaCat = jsgeoda.parseVecDouble(lisa.clusters());
-    // const pValues = jsgeoda.parseVecDouble(lisa.significances());
-
-    const returnFillColor = (obj, element) => {
-      const i = lisaCat[element.index];
-      return colors[i];
+    const moranConf = {
+      varName,
+      wuid: this._weightsSelect.getSelected().uid,
+      mapUid: this.getMapUID(),
+      jsgeoda: this.getJsGeoDa(),
+      values: getDataByFieldName(oldLayerData.data, varName),
+      oldLayer
     };
 
-    // used to trigger legend update: adding colorLegends
-    // { "rgba()" : "label1"}
-    var colorLegends = {};
-    for (let i = 0; i < colors.length; ++i) {
-      const hex = COLOR_LOCAL_MORAN[i];
-      const clr = hexToRgbStr(hex);
-      const lbl = LABEL_LOCAL_MORAN[i];
-      colorLegends[clr] = lbl;
-    }
-
-    var oldLayer = this.getTopLayer();
-
-    var newConfig = {
-      color: [0, 255, 0], // color is not used but can trigger the map to redraw
-      layerData: {getFillColor: returnFillColor},
-      colorField: {
-        name: varName,
-        type: 'integer'
-      }, // trigger updating legend
-      visConfig: {
-        ...oldLayer.config.visConfig,
-        colorRange: {
-          colors: COLOR_LOCAL_MORAN,
-          colorLegends,
-          colorMap: null // avoid getColorScale() to overwrite custom color
-        }
-      }
-    };
+    const newConfig = createLocalMoranMap(moranConf);
     this.props.dispatch(wrapTo(mapID, layerConfigChange(oldLayer, newConfig)));
   };
 
