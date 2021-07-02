@@ -22,19 +22,6 @@ const COLOR_NAME = {
 };
 
 export default class GeoDaMapButton extends DefaultButton {
-  formatNumeric = val => {
-    if (val === Infinity || val === -Infinity) {
-      return val;
-    } else if (val === Number(val)) {
-      return val;
-    }
-    return val.toFixed(2);
-  };
-
-  printRange = (v1, v2) => {
-    return `[${this.formatNumeric(v1)}, ${this.formatNumeric(v2)})`;
-  };
-
   createThemeMap = () => {
     // send layerConfigChange action to kepler
     // 0 means always apply on the top layer

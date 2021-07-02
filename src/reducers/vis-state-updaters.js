@@ -295,8 +295,10 @@ export function layerConfigChangeUpdater(state, action) {
 
   // allow to overwrite layerData functions: e.g. getFillColor, getLineColor etc.
   if ('layerData' in action.newConfig) {
-    for (let func in action.newConfig.layerData) {
-      layerData[func] = action.newConfig.layerData[func];
+    for (const func in action.newConfig.layerData) {
+      if ({}.hasOwnProperty.call(action.newConfig.layerData, func)) {
+        layerData[func] = action.newConfig.layerData[func];
+      }
     }
   }
 
