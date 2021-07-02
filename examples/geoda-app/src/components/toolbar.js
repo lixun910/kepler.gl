@@ -100,11 +100,15 @@ export default class GeoDaToolbar extends React.Component {
     // minimize toolbar
     // reposition it to top right corner, just above .map-control
   };
+
   handlerGeoDaOpen = () => {
     this.props.dispatch(wrapTo(this.mapID, openFileDialog()));
   };
+
   handlerGeoDaClose = () => {};
+
   handlerGeoDaSave = () => {};
+
   handlerGeoDaTable = () => {
     if (this.isMapLoaded()) {
       const dataId = this.props.demo.keplerGl[this.mapID].visState.layers[0].config.dataId;

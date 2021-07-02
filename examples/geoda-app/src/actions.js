@@ -22,13 +22,13 @@ import {createAction} from 'redux-actions';
 import {push} from 'react-router-redux';
 import {request, text as requestText, json as requestJson} from 'd3-request';
 import {loadFiles, toggleModal} from 'kepler.gl/actions';
-
 import {
   LOADING_SAMPLE_ERROR_MESSAGE,
   LOADING_SAMPLE_LIST_ERROR_MESSAGE,
   MAP_CONFIG_URL
 } from './constants/default-settings';
 import {parseUri} from './utils/url';
+import {colorbrewer, hexToRgb, hexToRgbStr} from './utils';
 
 import jsgeoda from 'jsgeoda';
 
@@ -368,4 +368,113 @@ export function loadJsgeoda(state, action) {
       fileReader.fileName = f.name;
     }
   });
+}
+
+export function weightsCreationAction(weightsCreationConf) {
+  return {
+    type: 'CREATE_WEIGHTS',
+    payload: weightsCreationConf
+  };
+}
+
+export function createWeights(state, action) {
+  let w = null;
+  const conf = action.payload;
+  const mapUid = state.geoda.currentMapUid;
+  const geoda = state.geoda.jsgeoda;
+
+  if (conf.WeightsType === 'contiguity') {
+    const order = conf.contiguity.Order;
+    const includeLowerOrder = conf.contiguity.IncludeLowerOrder;
+    const precisionThreshold = conf.contiguity.PrecisionThresholdValue;
+    if (conf.contiguity.ContiguityType === 'rook') {
+      w = geoda.CreateRookWeights(mapUid, order, includeLowerOrder, precisionThreshold);
+    } else {
+      w = geoda.CreateQueenWeights(mapUid, order, includeLowerOrder, precisionThreshold);
+    }
+  } else if (conf.WeightsType === 'distance') {
+    // placeholder
+    // not implemented yet
+  }
+
+  const weightsUniqueId = w.get_uid();
+  const n = Object.keys(state.geoda.weights[mapUid]).length;
+  state.geoda.weights[mapUid][weightsUniqueId] = {
+    idx: n,
+    uid: weightsUniqueId,
+    name: conf.weightsName,
+    type: conf.WeightsType,
+    isSymmetric: w.get_is_symmetric() ? 'yes' : 'no',
+    numObs: w.get_num_obs(),
+    minNbrs: w.get_min_nbrs(),
+    maxNbrs: w.get_max_nbrs(),
+    meanNbrs: w.get_mean_nbrs(),
+    medianNbrs: w.get_median_nbrs(),
+    sparsity: w.get_sparsity(),
+    density: w.get_density()
+  };
+
+  return state;
+}
+
+export function createChroplethMap(conf) {
+  const mapUid = conf.mapUid;
+  const geoda = conf.jsgeoda;
+  const k = conf.k;
+  const colorName = conf.colorName;
+  const varName = conf.varName;
+  const oldLayer = conf.oldLayer;
+
+  const nb = geoda.custom_breaks(mapUid, conf.selectedMethod, k, null, conf.values);
+  const colors = colorbrewer[colorName][k].map(hex => hexToRgb(hex));
+
+  const returnFillColor = (obj, index) => {
+    const x = obj.properties[varName];
+    for (var i = 1; i < nb.breaks.length; ++i) {
+      if (x < nb.breaks[i]) return colors[i - 1];
+    }
+    return [255, 255, 255];
+  };
+
+  const formatNumeric = val => {
+    if (val === Infinity || val === -Infinity) {
+      return val;
+    } else if (val === Number(val)) {
+      return val;
+    }
+    return val.toFixed(2);
+  };
+
+  const printRange = (v1, v2) => {
+    return `[${formatNumeric(v1)}, ${formatNumeric(v2)})`;
+  };
+
+  // used to trigger legend update: adding colorLegends
+  // { "rgba()" : "label1"}
+  const colorLegends = {};
+  for (let i = 0; i < k; ++i) {
+    const hex = colorbrewer[colorName][k][i];
+    const clr = hexToRgbStr(hex);
+    const lbl = printRange(nb.breaks[i], nb.breaks[i + 1]);
+    colorLegends[clr] = lbl;
+  }
+
+  const newConfig = {
+    color: [0, 255, 0], // color is not used but can trigger the map to redraw
+    layerData: {getFillColor: returnFillColor},
+    colorField: {
+      name: varName,
+      type: 'integer'
+    }, // trigger updating legend
+    visConfig: {
+      ...oldLayer.config.visConfig,
+      colorRange: {
+        colors: colorbrewer[colorName][k],
+        colorLegends,
+        colorMap: null // avoid getColorScale() to overwrite custom color
+      }
+    }
+  };
+
+  return newConfig;
 }

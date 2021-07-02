@@ -114,7 +114,8 @@ export default class GeoDaSAButton extends DefaultButton {
   render() {
     return (
       <div style={this.getButtonStyle()}>
-        <img className="GeoDa-Button"
+        <img
+          className="GeoDa-Button"
           src={this.props.src}
           alt={this.props.tooltip}
           onClick={this.handleClickButton}

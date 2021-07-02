@@ -37,7 +37,7 @@ import {
 import {AUTH_TOKENS, DEFAULT_FEATURE_FLAGS, GEODA_MAP_ID} from '../constants/default-settings';
 import {generateHashId} from '../utils/strings';
 
-import {loadJsgeoda} from '../actions';
+import {loadJsgeoda, createWeights} from '../actions';
 import jsgeoda from 'jsgeoda';
 
 // INITIAL_APP_STATE
@@ -278,6 +278,10 @@ const composedReducer = (state, action) => {
 
     case 'OPEN_FILE_DIALOG':
       // state.keplerGl[GEODA_MAP_ID].uiState.currentModal = 'addData';
+      break;
+
+    case 'CREATE_WEIGHTS':
+      state = createWeights(state, action);
       break;
 
     default:

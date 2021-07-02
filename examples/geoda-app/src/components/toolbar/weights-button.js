@@ -13,7 +13,8 @@ export default class GeoDaWeightsButton extends DefaultButton {
     this.state = {
       open: false, // overwrite parent class
       checked: [],
-      isCreateOpen: false
+      isCreateOpen: false,
+      weights: props.demo.geoda.weights
     };
   }
 

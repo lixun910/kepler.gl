@@ -19,7 +19,7 @@ export default class DistanceTabPanel extends React.Component {
         )}
       </div>
     );
-  };
+  }
 }
 
 DistanceTabPanel.propTypes = {
